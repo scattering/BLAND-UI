@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>React Tutorial</title>
+    <!-- Not present in the tutorial. Just for basic styling. -->
+	<link rel="stylesheet" type="text/css" href="http://adazzle.github.io/react-data-grid/assets/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" type="text/css" href="http://adazzle.github.io/react-data-grid/build/react-data-grid.css"></link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-with-addons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.min.js"></script>
+	<script src="//C:/users/nps/node_modules/redux/dist/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+	<script src="//C:/users/nps/node_modules/react-data-grid/dist/react-data-grid-with-addons.js"></script>
+	<style>
+	.button {
+		background-color: white;
+		border: gray;
+		color: black;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		cursor: pointer;
+	}
+	</style>
+  </head>
+  <body>
+	<center><strong>Enter Your Parameters</strong></center> <br/>
+    <div id="content">
+	<script type="text/javascript" src="./actions.js"></script>
+    <script type="text/javascript" src="./reducers.js"></script>
+	<script type="text/javascript" src="./store.js"></script>
+	<script type="text/javascript" src="./components.js"></script>
+	<script type="text/javascript" src="./grid.js"></script>
+	<!--<script src="//C:/users/nps/documents/node_modules/material-ui/RaisedButton/bundle.js"></script>
+	<script type="text/javascript" src="button.js">
+			ReactDOM.render(<Button />, document.getElementById('alignRight'));
+	</script>-->
+	</div>
+	<div id="alignRight" align="right">
+		<button class="btn" onclick="handleOnClick()" type="button">Calculate</button>
+		<script>
+			function handleOnClick() {
+				const myState = store.getState();
+				const json = JSON.stringify(myState);
+				
+				xhr = new XMLHttpRequest();
+				var url = "http://localhost:8000/";
+				xhr.open("POST", url, true);
+				xhr.setRequestHeader("Content-Type", "application/json");
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState == 4 && xhr.status == 200) {
+						var json1 = JSON.parse(xhr.responseText);
+						console.log(json1);
+					}
+				}
+				xhr.send(json);
+				console.log(json);
+				alert('Stringification complete');
+			}
+		</script>
+	</div>
+	</body>
+</html>

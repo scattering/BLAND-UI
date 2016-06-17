@@ -1,0 +1,24 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+a { text-decoration: none; }
+
+
+/* =============================================================================
+  An example of how stylize the tabs
+============================================================================= */
+
+.tabs {
+  margin-top: 50px;
+}
+
+.tabs-navigation {
+  padding: 0 50px;
+}
+
+.tabs-panel {
+  padding: 50px;
+}
