@@ -5,7 +5,8 @@
 #   patterns to observed data.
 #   
 #   FortWrap/Swig Version based on original from 2013
-#
+#   
+#   Edited Summer 2016
 
 from ctypes import *
 from pycrysfml import *
