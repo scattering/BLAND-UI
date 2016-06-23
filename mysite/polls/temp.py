@@ -12,6 +12,6 @@ for index in range(len(atoms)):
     atoms[index] = str(index + 1) + '    |    ' +  temp
 print(atoms)
 for el in elements:
-    print("%s %s"%(el.symbol,el.name))
+    print("%s %s  %d"%(el.symbol,el.name, el.number))
 #for el in elements:  # lists the element symbols
    # print(elements.isotope(el.name))

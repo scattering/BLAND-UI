@@ -122,10 +122,16 @@ class CrystalCell(crystal_cell_type):
         LVec = FloatVector([0 for i in range(3)])
         self.get_crystal_cell_cell(LVec)
         return LVec
+    def lengthList(self):
+        LVec = self.length()
+        return list(LVec)
     def angle(self):
         AVec = FloatVector([0 for i in range(3)])
         self.get_crystal_cell_ang(AVec)
         return AVec
+    def angleList(self):
+        AVec = self.angle()
+        return list(AVec)
     @property
     def volume(self):
         return self.get_crystal_cell_cellvol()

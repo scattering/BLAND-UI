@@ -6,28 +6,29 @@ function handleOnClick() {
 	const done2 = checkComplete(checkTab2, 7);
 	const checkTab3 = myState['myReducer3'];
 	const done3 = checkComplete(checkTab3, 9);
+	atoms[0] = '1'
 	var bad = false;
 	if(done === 'incomplete row') {
-		alert('Error, you have an ' + done);
+		alert('Error, you have an incomplete Atom.');
 		bad = true;
 	}
 	else if (done === 'no data') {
-		alert('Error, you have input ' + done);
+		alert('Error, please input at least one Atom.');
 		bad = true;
 	}
 	if((done2 === 'incomplete row') || (done2 === 'no data')) {
-		alert('Error, please complete the cell information on Tab #2');
+		alert('Error, please complete the Unit Cell information.');
 		bad = true;
 	}
 	if((done3 === 'incomplete row') || (done3 === 'no data')) {
-		alert('Error, please complete the cell information on Tab #3');
+		alert('Error, please complete the Instrument information.');
 		bad = true;
 	}
 	if(bad === false) {
 		console.log(done);
-	
+		document.getElementById('mybtn').disabled = true;
 		const json = JSON.stringify(myState);
-		
+
 		xhr = new XMLHttpRequest();
 		var url = "http://localhost:8001/polls/calc/";
 		xhr.open("POST", url, true);
@@ -35,12 +36,26 @@ function handleOnClick() {
 		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200) {
-				//console.log(xhr.responseText[0])
-				//var json1 = JSON.parse(xhr.responseText[0]);
-				//console.log(json1);
-				console.log(xhr.responseText);
-				alert(xhr.responseText)
+				var json1 = JSON.parse(xhr.responseText);
+				console.log(json1);
+				var myWindow = window.open("", "_blank", "height=750,width=1000");
+				myWindow.document.write("<head><title>Results</title></head><p>Here are the results!</p><div id='new'></div>");
+				var mod = 0
+				var arr = []
+				myWindow.document.getElementById("new").innerHTML = "&nbsp;h k l&nbsp; &emsp;Two Theta&emsp;Struct Fact<hr align='left' width=200/>"
+				for(i = 0; i < json1[1].length; i++) {
+					hkl = json1[0][i];
+					tt = json1[1][i].toPrecision(5);
+					if(json1[2][i] > 10) {
+						sF = json1[2][i].toFixed(11)
+					}
+					else {
+						sF = json1[2][i].toFixed(12)
+					}
+					myWindow.document.getElementById("new").innerHTML += "(" + hkl + ")" + "&emsp;" + tt + "&emsp;" + sF + "<br/>"
+				}
 			}
+			document.getElementById('mybtn').disabled = false;
 		}
 		xhr.send(json);
 		console.log(json);

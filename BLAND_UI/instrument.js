@@ -4,7 +4,7 @@ var Instrument = React.createClass({displayName: 'component3',
       var fakeRows = create3(1);
       return {rows :fakeRows};
     },
-	
+
     getColumns3: function() {
       var clonedColumns = columns3.slice();
       /*clonedColumns[0].events = {
@@ -17,11 +17,17 @@ var Instrument = React.createClass({displayName: 'component3',
       }*/
       return clonedColumns;
     },
-	
+
 	componentDidMount: function() {
-		store.subscribe(() => this.forceUpdate());
+		store.subscribe(this.update);
 	},
-	
+
+  update: function() {
+    if(this.isMounted()) {
+      this.forceUpdate();
+    }
+  },
+
     handleGridRowsUpdated3 : function(updatedRowData) {
 
       for (var i = updatedRowData.fromRow; i <= updatedRowData.toRow; i++) {
@@ -112,20 +118,26 @@ var Instrument = React.createClass({displayName: 'component3',
 		const real = myState['myReducer3'];
 		return real.length;
     },
-	
+
+    handleMount: function() {
+	     document.getElementById('mybtn').style.visibility = "visible";
+    },
+
     render : function() {
+      document.getElementById('inner').style.visibility = 'hidden';
       return (
-            React.createElement(ReactDataGrid, {
-              ref: 'cell',
-              enableCellSelect: true,
-              columns: this.getColumns3(),
-              rowGetter: this.rowGetter,
-              rowsCount: this.getSize3(),
-              onGridRowsUpdated: this.handleGridRowsUpdated3,  
-              rowHeight: 50,
-              minHeight: 108,
-              rowScrollTimeout: 200,
-              })
+	    React.createElement(ReactDataGrid, {
+	      ref: 'cell',
+	      enableCellSelect: true,
+	      columns: this.getColumns3(),
+	      rowGetter: this.rowGetter,
+	      rowsCount: this.getSize3(),
+	      onGridRowsUpdated: this.handleGridRowsUpdated3,
+	      rowHeight: 50,
+	      minHeight: 108,
+	      rowScrollTimeout: 200,
+	      componentDidMount: this.handleMount(),
+	      })
       );
     }
 });

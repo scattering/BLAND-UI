@@ -17,6 +17,8 @@ from .calculations.vtkModel.SpaceGroups import *
 from .models import Question, Choice, Atom
 from .read_cif import *
 import numpy as np
+from django.template import RequestContext
+import hashlib
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -128,8 +130,13 @@ def calc(request):
     tt, intensity, hkl = H.diffPattern(wavelength=wavelength, cell=my_cell, uvw=uvw, ttMin=tMin, ttMax=tMax, spaceGroup=real_sg, atomList=atomList, info=True)
     structFact = H.structWrap(tMin, tMax, wavelength, real_sg, my_cell, atomList)
     print "There are %d reflections" % len(tt)
+    sf = []
     for i in range(len(tt)):
-	print "2T:", tt[i], "\tIntensity:", intensity[i], "\tStruct factor is:", np.sqrt(structFact[i]), "\tHKL:", hkl[0][i], hkl[1][i], hkl[2][i]
+	sf.append(np.sqrt(structFact[i]))
+	temp = tt[i]
+	tt[i] = float(temp)
+	print "2T:", tt[i], "\tIntensity:", intensity[i], "\tStruct factor is:", sf[i], "\tHKL:", hkl[0][i], hkl[1][i], hkl[2][i]
+    print type(tt[0]), type(hkl[0][i])
     #print "2 theta is",tt, "Intensity is", intensity
    # for key, value in my_cell.atoms.items():                   
           #  d=value.getPosition()
@@ -140,5 +147,36 @@ def calc(request):
     inst = json.dumps(instrument)
     hkl_ret = []
     for i in range(len(hkl[0])):
-	hkl_ret.append([hkl[0][i], hkl[1][i], hkl[2][i]])
-    return HttpResponse([hkl_ret, tt, structFact])
+	hkl_ret.append([int(hkl[0][i]), int(hkl[1][i]), int(hkl[2][i])])
+    ret = json.dumps([hkl_ret, tt, sf])
+    context = RequestContext(request)
+    print context
+    return HttpResponse(ret)
+
+@csrf_exempt
+def upload(request):
+    print "Hi"
+    print request.FILES['file']
+    fp = request.FILES['file']
+    for line in fp:
+	print line
+	
+    handle_uploaded_file(fp)
+    spaceGroup, cell, atomList = H.readInfo(os.path.join('/tmp/bland',str(fp.name)))
+    #print spaceGroup.number
+    #print cell.volume
+    ret = [spaceGroup.number, cell.lengthList(), cell.angleList()]
+    for atom in atomList:
+	for el in periodictable.elements:
+	    if(el.symbol == atom.element()):
+		ell = el.number
+	ret.append([atom.label(), atom.element(), atom.coords(), atom.occupancy(), atom.BIso(), ell])
+    ret = json.dumps(ret)
+    return HttpResponse(ret)
+
+def handle_uploaded_file(f):
+    if not os.path.exists('/tmp/bland'):
+	os.makedirs('/tmp/bland')    
+    with open(os.path.join('/tmp/bland',str(f.name)), 'wb+') as destination:
+	for chunk in f.chunks():
+	    destination.write(chunk)

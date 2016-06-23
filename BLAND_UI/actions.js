@@ -9,6 +9,7 @@ const CHANGE_Z = 'CHANGE_Z'
 const CHANGE_OCCUPANCY = 'CHANGE_OCCUPANCY'
 const CHANGE_B = 'CHANGE_B'
 const ADD_ROW = 'ADD_ROW'
+const CHANGE_WHOLE_ROW = 'CHANGE_WHOLE_ROW'
 const DO_NOTHING = 'DO_NOTHING'
 
 function changeLabel(text, index) {
@@ -50,6 +51,9 @@ function changeB(text, index) {
 function addRow(obj) {
 	return {type: ADD_ROW, obj}
 }
+function changeWholeRow(label, atom, valence, isotope, x, y, z, occupancy, thermal, index) {
+	return {type: CHANGE_WHOLE_ROW, label, atom, valence, isotope, x, y, z, occupancy, thermal, index}
+}
 function doNothing() {
 	return {type: DO_NOTHING}
 }
@@ -63,6 +67,7 @@ const CHANGE_C = 'CHANGE_C'
 const CHANGE_ALPHA = 'CHANGE_ALPHA'
 const CHANGE_BETA = 'CHANGE_BETA'
 const CHANGE_GAMMA = 'CHANGE_GAMMA'
+const CHANGE_CELL = 'CHANGE_CELL'
 
 function changeSpace(text, index) {
 	return {type: CHANGE_SPACE, text, index}
@@ -85,7 +90,9 @@ function changeBeta(number, index) {
 function changeGamma(number, index) {
 	return {type: CHANGE_GAMMA, number, index}
 }
-
+function changeCell(space, a, b, c, alpha, beta, gamma) {
+	return {type: CHANGE_CELL, space, a, b, c, alpha, beta, gamma}
+}
 
 
 const CHANGE_SCALE = 'CHANGE_SCALE'
@@ -125,3 +132,13 @@ function changeTMin(number, index) {
 function changeTMax(number, index) {
 	return {type: CHANGE_TMAX, number, index}
 }
+
+
+/*const ADD_FILE = 'ADD_FILE'
+const REMOVE_FILE = 'REMOVE_FILE'
+function addFile(obj) {
+	return {type: ADD_FILE, obj}
+}
+function removeFile() {
+	return {type: REMOVE_FILE}
+}*/

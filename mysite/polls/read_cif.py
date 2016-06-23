@@ -14,7 +14,7 @@ def cif_to_cell(filestr, select_atoms=None):
     This function takes a cif file string as an input, as well as an optional list of atom types to select (ex. Mn).
     """
     #read contents of CIF file
-    cf = CifFile.ReadCif(filestr)
+    cf = ReadCif(filestr)
     sample_name = list(cf.dictionary.keys())[0]
     #unit cell in Angstroms
     a =  float(re.sub('\)','',re.sub('\(','',cf[sample_name]['_cell_length_a']))) 

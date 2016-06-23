@@ -12,4 +12,8 @@ urlpatterns = [
     # /polls/5/vote/
     url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
     url(r'^calc/$', views.calc, name='calc'),
+    url(r'^upload/$', views.upload, name='upload'),
+    url(r'^cell/$', views.IndexView.as_view(), name='index'),
+    url(r'^grid/$', views.IndexView.as_view(), name='index'),
+    url(r'^instrument/$', views.IndexView.as_view(), name='index')
     ]

@@ -4,7 +4,7 @@ var Grid = React.createClass({displayName: 'component',
       var fakeRows = createRows(10);
       return {rows :fakeRows};
     },
-	
+
     getColumns: function() {
       var clonedColumns = columns.slice();
 	  clonedColumns[1].events = {
@@ -44,11 +44,17 @@ var Grid = React.createClass({displayName: 'component',
       }
       return clonedColumns;
     },
-	
+
 	componentDidMount: function() {
-		store.subscribe(() => this.forceUpdate());
+		store.subscribe(this.update);
 	},
-	
+
+  update: function() {
+    if(this.isMounted()) {
+      this.forceUpdate();
+    }
+  },
+
     handleGridRowsUpdated : function(updatedRowData) {
 
       for (var i = updatedRowData.fromRow; i <= updatedRowData.toRow; i++) {
@@ -144,8 +150,8 @@ var Grid = React.createClass({displayName: 'component',
       if (index < 0 || index > this.getSize()){
         return undefined;
       }
-	  const myState = store.getState();
-	  const real = myState['myReducer'];
+  	  const myState = store.getState();
+  	  const real = myState['myReducer'];
       return real[index];
     },
 
@@ -154,22 +160,28 @@ var Grid = React.createClass({displayName: 'component',
 	  const real = myState['myReducer'];
       return real.length;
     },
-	
+
+    handleMount: function() {
+	     document.getElementById('mybtn').style.visibility = "visible";
+    },
+
 
     render : function() {
-      return (
-            React.createElement(ReactDataGrid, {
-              ref: 'grid',
-              enableCellSelect: true,
-              columns: this.getColumns(),
-              rowGetter: this.rowGetter,
-              rowsCount: this.getSize(),
-              onGridRowsUpdated: this.handleGridRowsUpdated,
-              toolbar: React.createElement(Toolbar, {onAddRow: this.handleAddRow}),		  
-              rowHeight: 50,
-              minHeight: 558,
-              rowScrollTimeout: 200,
-              })
-      );
+        document.getElementById('inner').style.visibility = 'visible';
+        return (
+              React.createElement(ReactDataGrid, {
+                  ref: 'grid',
+                  enableCellSelect: true,
+                  columns: this.getColumns(),
+                  rowGetter: this.rowGetter,
+                  rowsCount: this.getSize(),
+                  onGridRowsUpdated: this.handleGridRowsUpdated,
+                  toolbar: React.createElement(Toolbar, {onAddRow: this.handleAddRow}),
+                  rowHeight: 50,
+                  minHeight: 558,
+                  rowScrollTimeout: 200,
+                  componentDidMount: this.handleMount(),
+                })
+        );
     }
 });
