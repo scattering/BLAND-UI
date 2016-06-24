@@ -80,7 +80,7 @@ var NavItem = ReactBootstrap.NavItem;
             null,
             React.createElement(
               Link,
-              { to: "/polls/" },
+              { to: "/bland/" },
               "Home"
             )
           ),
@@ -89,7 +89,7 @@ var NavItem = ReactBootstrap.NavItem;
             null,
             React.createElement(
               Link,
-              { to: "/polls/cell/" },
+              { to: "/bland/cell/" },
               "Unit Cell"
             )
           ),
@@ -98,7 +98,7 @@ var NavItem = ReactBootstrap.NavItem;
             null,
             React.createElement(
               Link,
-              { to: "/polls/grid/" },
+              { to: "/bland/grid/" },
               "Atoms"
             )
           ),
@@ -107,7 +107,7 @@ var NavItem = ReactBootstrap.NavItem;
             null,
             React.createElement(
               Link,
-              { to: "/polls/instrument/" },
+              { to: "/bland/instrument/" },
               "Instrument"
             )
           )
@@ -158,7 +158,7 @@ var MainLayout = React.createClass ({
 					React.createElement(Navbar.Header, null,
 						React.createElement(Navbar.Brand, null,
 							React.createElement(IndexLink,
-								{ to: "/polls/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'}, onClick: this.handleClick1 },
+								{ to: "/bland/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'}, onClick: this.handleClick1 },
 								"Home"
 							)
 						)
@@ -166,19 +166,19 @@ var MainLayout = React.createClass ({
 					React.createElement(Nav, { bsStyle: "pills", pullLeft: false },
 						React.createElement(NavItem, {eventKey: 1 },
 							React.createElement(Link,
-								{ to: "/polls/cell/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
+								{ to: "/bland/cell/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
 								"Unit Cell"
 							)
 						),
 						React.createElement(NavItem, {eventKey: 2},
 							React.createElement(Link,
-								{ to: "/polls/grid/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
+								{ to: "/bland/grid/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
 								"Atoms"
 							)
 						),
 						React.createElement(NavItem, {eventKey: 3},
 							React.createElement(Link,
-								{ to: "/polls/instrument/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
+								{ to: "/bland/instrument/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
 								"Instrument"
 							)
 						)
@@ -209,10 +209,10 @@ ReactDOM.render(React.createElement(
   {history: browserHistory },
   React.createElement(
 	Route,
-	{ path: "/polls/", component: MainLayout },
+	{ path: "/bland/", component: MainLayout },
 	React.createElement(IndexRoute, { component: Home }),
-	React.createElement(Route, { path: "/polls/cell/", component: Cell }),
-	React.createElement(Route, { path: "/polls/grid/", component: Grid }),
-	React.createElement(Route, { path: "/polls/instrument/", component: Instrument })
+	React.createElement(Route, { path: "/bland/cell/", component: Cell }),
+	React.createElement(Route, { path: "/bland/grid/", component: Grid }),
+	React.createElement(Route, { path: "/bland/instrument/", component: Instrument })
   )
 ), document.getElementById('content'));

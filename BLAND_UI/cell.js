@@ -1,4 +1,4 @@
-var componentDidMount2 = function() {
+/*var componentDidMount2 = function() {
   state = store.getState()
   //if(state['myReducer4'][0]) {
     //document.getElementById('confirm').style.visibility = 'visible';
@@ -15,7 +15,7 @@ var componentDidMount2 = function() {
 var componentConfig = {
     //iconFiletypes: ['.gif', '.dat'],
     //showFiletypeIcon: false,
-    postUrl: 'http://localhost:8001/polls/upload/'
+    postUrl: 'http://localhost:8001/bland/upload/'
 };
 
 var djsConfig = {
@@ -157,7 +157,7 @@ var eventHandlers = {
     reset: null,
     queuecompleted: null
 };
-
+*/
 var Cell = React.createClass({displayName: 'component2',
 
     getInitialState : function(){
@@ -308,11 +308,11 @@ var Cell = React.createClass({displayName: 'component2',
 
 //document.getElementById('place').innerHTML += React.createElement("div", {id: 'drop', style: { 'width': '300px', 'marginTop': '10px'}})
 
-ReactDOM.render(
+/*ReactDOM.render(
   React.createElement("div", {id: 'lower'},
       React.createElement(DropzoneComponent,
       {
         config: componentConfig, eventHandlers: eventHandlers, djsConfig: djsConfig, componentDidMount: componentDidMount2()
       }),
       React.createElement("div", {id: 'lowest'}, 'Upload a .cif or .pcr file to fill in your unit cell and atomic information.')
-), document.getElementById('inner'))
+), document.getElementById('inner'))*/

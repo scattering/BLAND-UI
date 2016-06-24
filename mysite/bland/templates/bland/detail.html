@@ -1,0 +1,27 @@
+<h1>{{ question.question_text }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'bland:vote' question.id %}" method="post">
+{% csrf_token %}
+{% for choice in question.choice_set.all %}
+	<input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+	<label for="choice{{ forloop.counter }}">{{ choice.choice_text}}</label><br />
+{% endfor %}
+<input type="submit" value="Vote" />
+</form>
+
+<!--{% if latest_question_list %}    //old index.html
+	<ul>
+	{% for question in latest_question_list %}
+		<li><a href="{% url 'bland:detail' question.id %}">{{ question.question_text}}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p>No bland are available.</p>
+{% endif %}
+
+<form action="{% url 'bland:calc' %}" method="post">
+{% csrf_token %}
+<input class="btn" type="submit" value="Calculate" onclick="handleOnClick()"/>
+</form>-->

@@ -30,7 +30,7 @@ function handleOnClick() {
 		const json = JSON.stringify(myState);
 
 		xhr = new XMLHttpRequest();
-		var url = "http://localhost:8001/polls/calc/";
+		var url = "http://localhost:8001/bland/calc/";
 		xhr.open("POST", url, true);
 		xhr.responseType = 'text';
 		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
