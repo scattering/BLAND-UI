@@ -17,4 +17,4 @@ Requires Django, Numpy, Demjson.
 
 5: python manage.py runserver 8001
 
-6: Go to http://localhost:8001/polls
+6: Go to http://localhost:8001/bland
