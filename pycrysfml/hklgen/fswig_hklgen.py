@@ -1196,7 +1196,8 @@ def diffPattern(infoFile=None, backgroundFile=None, wavelength=1.5403,
     if plot:
         plotPattern(peaks, background, observedData[0], observedData[1],
                     ttMin, ttMax, ttStep, exclusions, labels=labels, base=base, residuals=residuals, error=error)
-        pylab.show()
+        #pylab.show()
+        pylab.savefig(os.path.join('/tmp/bland',str('plot.jpg')), dpi=2000)
     if saveFile:
         np.savetxt(saveFile, (tt, intensity), delimiter=" ")
     tt1 = ["%.3f" % twoTheta(ref.s, wavelength) for ref in refList]
@@ -1204,7 +1205,7 @@ def diffPattern(infoFile=None, backgroundFile=None, wavelength=1.5403,
     for atom in atomList:
             print atom.label(), "element:", atom.element(), "iso:", atom.BIso(), "multip:", atom.multip(), "coords:", atom.coords(), "occupancy:", atom.occupancy()    
     h, k, l = tuple([str(ref.hkl[i]) for ref in refList] for i in xrange(3))
-    return (tt1, intensity1, [h,k,l])
+    return (tt1, tt, intensity, [h,k,l])
 
 
 # printInfo: prints out information about the provided space group and atoms,
@@ -1312,13 +1313,15 @@ def plotPattern(peaks, background, ttObs, observed, ttMin, ttMax, ttStep,
     ttCalc = np.linspace(ttMin, ttMax, numPoints)
     if(exclusions != None): ttCalc = removeRange(ttCalc, exclusions)
     intensity = np.array(getIntensity(peaks, background, ttCalc, base=base))
+    print "intensity from plot is ", intensity
     pylab.subplot(211)
     if (observed != None):
         if exclusions:
             ttObs, observed = removeRange(ttObs, exclusions, observed)
-        pylab.plot(ttObs, observed, '-go', linestyle="None", label="Observed",lw=1)
+        pylab.plot(ttObs, observed, 'g.', linestyle="None", label="Observed",lw=1)
     pylab.plot(ttCalc, np.array(intensity), '-b', label="Calculated", lw=1)
     intensityCalc = np.array(getIntensity(peaks, background, ttObs, base=base))
+    print len(ttObs), len(ttCalc)
     pylab.errorbar(ttObs, np.array(observed), yerr=error, fmt=None, ecolor='g')
 #    pylab.fill_between(ttObs, observed, intensity, color="lightblue")
     pylab.xlabel(r"$2 \theta$")

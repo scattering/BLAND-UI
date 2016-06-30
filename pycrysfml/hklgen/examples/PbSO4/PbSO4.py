@@ -56,7 +56,7 @@ def main():
     uvw = [0.167065, -0.473453, 0.426145]
     H.diffPattern(infoFile=infoFile, wavelength=wavelength,
                   cell=cell, uvw=uvw, scale=1.4869,
-                  ttMin=ttMin, ttMax=ttMax, info=False, plot=True,
+                  ttMin=ttMin, ttMax=ttMax, info=True, plot=True,
                   observedData=(tt,observed), error=error)
 
 if __name__ == "__main__":

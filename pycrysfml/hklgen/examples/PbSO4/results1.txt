@@ -19,7 +19,7 @@ Space group information
 
 Atom information (5 atoms)
 ----------------------------------------
-<fswig_hklgen.AtomList; proxy of <Swig Object of type 'atom_list_type *' at 0x7f369b63c930> >
+<fswig_hklgen.AtomList; proxy of <Swig Object of type 'atom_list_type *' at 0x7fbad2371930> >
 multip is ['4', '4', '4', '4', '8']
 label     x     y     z     mult   occ 
   Pb   (0.188 0.250 0.167)   4    1.000

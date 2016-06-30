@@ -2,6 +2,121 @@
     <title>
 	BLAND UI
     </title>
+    <style>
+      #plot1 {
+        width: 100%;
+        height: 40%;
+      }
+      #addTab {
+        class: 'btn';
+      }
+      svg,
+      canvas {
+        position: absolute;
+        image-rendering: optimizeSpeed;
+        image-rendering: crisp-edges;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: optimize-contrast;
+        -ms-interpolation-mode: nearest-neighbor;
+      }
+
+      .axis-label {
+        font-size: 18px;
+      }
+
+      .axis .tick text {
+        font-size: 14px;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .grid .tick {
+          stroke: lightgrey;
+          opacity: 0.7;
+      }
+      .grid path {
+            stroke-width: 1;
+            fill: none;
+      }
+      .grid .tick {
+              stroke: lightgrey;
+              opacity: 0.7;
+              shape-rendering: crispEdges;
+              user-select: none;
+              -webkit-user-select: none;
+              -moz-user-select: none;
+          }
+
+      .grid path {
+          stroke-width: 0;
+          fill: none;
+      }
+
+      .axis path {
+          fill: none;
+          stroke: #bbb;
+          shape-rendering: crispEdges;
+      }
+
+      .axis text {
+          fill: #555;
+      }
+
+      .axis line {
+          stroke: #e7e7e7;
+          shape-rendering: crispEdges;
+      }
+
+      .axis .axis-label {
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+      }
+
+      .legend, .tick {
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+      }
+
+      .line {
+          fill: none;
+          stroke-width: 1.5px;
+      }
+
+      .highlight {
+          stroke-width: 4.5px;
+      }
+
+      .dot {
+          /* consider the stroke-with the mouse detect radius? */
+          stroke: transparent;
+          stroke-width: 10px;
+          cursor: pointer;
+      }
+
+      .dot:hover {
+          stroke: rgba(68, 127, 255, 0.3);
+      }
+
+      rect {
+        fill: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+      }
+
+      rect.zoom {
+        stroke: steelblue;
+        fill-opacity: 0.5;
+      }
+    </style>
 </head>
 
 {% load staticfiles %}
@@ -12,31 +127,52 @@
 <link rel="stylesheet" type="text/css" href="http://localhost:8080/temp/style.css"></link>
 <link rel="stylesheet" type="text/css" href="http://localhost:8080/temp/filepicker.css"></link>
 <link rel="stylesheet" type="text/css" href="http://localhost:8080/temp/dropzone.min.css"></link>
-
+<link rel="stylesheet" href="http://instructure-react.github.io/library/shared.css"/>
 
 <center><h1>Enter Your Parameters</h1></center>
 
 <div id="content"></div>
 
 <div style="font-size:0">
-<div id="inner" style="width:20%;margin-top:10px;margin-left:10%;margin-right:40%;display:inline-block;font-size:15;"></div>
+<div id="inner" style="width:20%;margin-top:10px;margin-right:60%;display:inline-block;font-size:15;"></div>
 <div id="below" style="width:20%;display:inline-block;font-size:15;"/></div>
 </div>
 
-<div id="alignRight" style="text-align:right; margin-right:15px">
+<div id="alignRight" style="text-align:right; margin-right:15px; margin-bottom:10px">
 	<br/><button id="mybtn" class="btn" onclick="handleOnClick()" type="button" style="visibility:hidden;">Calculate</button>
 </div>
-
+<!--div id="try">Click me!</div-->
+<script>
+  data = []
+  var num = 1
+  /*document.getElementById('try').addEventListener('click', function() {
+    if(data[0]) {
+      chart = xyChart({show_line: true, show_errorbars: true, ytransform: 'linear'})
+      c = d3.select("#plot1")
+        .data([data[0].data])
+        .call(chart);
+      console.log('Plotted');
+    }
+    else {
+      alert('No data to plot!');
+    }
+  }, false);*/
+</script>
+<!--<div id="plot1"></div-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-with-addons.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.min.js"></script>
 <script src="http://localhost:8080/temp/redux.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script src="http://localhost:8080/temp/xy-chart.js"></script>
 <script src="http://localhost:8080/temp/react-data-grid-with-addons.js"></script>
 <script src="http://localhost:8080/temp/react-simpletabs.js"></script>
 <script src="http://localhost:8080/temp/ReactRouter.js"></script>
 <script src="http://localhost:8080/temp/react-bootstrap.js"></script>
 <script src="http://localhost:8080/temp/react-dropzone.js"></script>
+<script src="http://localhost:8080/temp/react-tabs.js"></script>
 <script type="text/javascript" src="http://localhost:8080/actions.js"></script>
 <script type="text/javascript" src="http://localhost:8080/reducers.js"></script>
 <script type="text/javascript" src="http://localhost:8080/store.js"></script>
@@ -46,4 +182,6 @@
 <script type="text/javascript" src="http://localhost:8080/methods.js"></script>
 <script type="text/javascript" src="http://localhost:8080/instrument.js"></script>
 <script type="text/javascript" src="http://localhost:8080/grid.js"></script>
+<script type="text/javascript" src="http://localhost:8080/results.js"></script>
+<script type="text/javascript" src="http://localhost:8080/models.js"></script>
 <script type="text/javascript" src="http://localhost:8080/mynew.js"></script>

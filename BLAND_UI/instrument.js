@@ -1,9 +1,9 @@
 var Instrument = React.createClass({displayName: 'component3',
 
-    getInitialState : function(){
+    /*getInitialState : function(){
       var fakeRows = create3(1);
       return {rows :fakeRows};
-    },
+    },*/
 
     getColumns3: function() {
       var clonedColumns = columns3.slice();
@@ -19,6 +19,7 @@ var Instrument = React.createClass({displayName: 'component3',
     },
 
 	componentDidMount: function() {
+    document.getElementById('below').style.visibility = 'visible';
 		store.subscribe(this.update);
 	},
 
@@ -110,12 +111,12 @@ var Instrument = React.createClass({displayName: 'component3',
       }
 	  const myState = store.getState();
 	  const real = myState['myReducer3'];
-      return real[index];
+    return real[index];
     },
 
     getSize3 : function() {
 		const myState = store.getState();
-		const real = myState['myReducer3'];
+	  const real = myState['myReducer3'];
 		return real.length;
     },
 
@@ -125,6 +126,7 @@ var Instrument = React.createClass({displayName: 'component3',
 
     render : function() {
       document.getElementById('inner').style.visibility = 'hidden';
+      document.getElementById('below').style.visibility = 'visible';
       return (
 	    React.createElement(ReactDataGrid, {
 	      ref: 'cell',

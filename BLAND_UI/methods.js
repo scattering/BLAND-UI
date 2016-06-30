@@ -1,11 +1,14 @@
 function handleOnClick() {
 	const myState = store.getState();
-	const checkTab1 = myState['myReducer'];
-	const done = checkComplete(checkTab1, 9);
-	const checkTab2 = myState['myReducer2'];
-	const done2 = checkComplete(checkTab2, 7);
-	const checkTab3 = myState['myReducer3'];
-	const done3 = checkComplete(checkTab3, 9);
+	//const checkTab1 = myState['myReducer'];
+	//const done = checkComplete(checkTab1, 9);
+	//const checkTab2 = myState['myReducer2'];
+	//const done2 = checkComplete(checkTab2, 7);
+	//const checkTab3 = myState['myReducer3'];
+	//const done3 = checkComplete(checkTab3, 9);
+	/*for(i = 0; i < myState['myReducer4']['Phases'].length; i++) {
+
+	}
 	atoms[0] = '1'
 	var bad = false;
 	if(done === 'incomplete row') {
@@ -23,10 +26,12 @@ function handleOnClick() {
 	if((done3 === 'incomplete row') || (done3 === 'no data')) {
 		alert('Error, please complete the Instrument information.');
 		bad = true;
-	}
+	}*/
+	bad = false;
 	if(bad === false) {
-		console.log(done);
+		//console.log(done);
 		document.getElementById('mybtn').disabled = true;
+		//console.log(myState)
 		const json = JSON.stringify(myState);
 
 		xhr = new XMLHttpRequest();
@@ -37,12 +42,21 @@ function handleOnClick() {
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200) {
 				var json1 = JSON.parse(xhr.responseText);
-				console.log(json1);
+				//console.log(json1);
 				var myWindow = window.open("", "_blank", "height=750,width=1000");
 				myWindow.document.write("<head><title>Results</title></head><p>Here are the results!</p><div id='new'></div>");
 				var mod = 0
 				var arr = []
 				myWindow.document.getElementById("new").innerHTML = "&nbsp;h k l&nbsp; &emsp;Two Theta&emsp;Struct Fact<hr align='left' width=200/>"
+				data[0].push([])
+				data[0].push([])
+				console.log(data[0].length)
+				if(data[0]) {
+					j = 1;
+				}
+				else {
+					j = 0;
+				}
 				for(i = 0; i < json1[1].length; i++) {
 					hkl = json1[0][i];
 					tt = json1[1][i].toPrecision(5);
@@ -52,13 +66,20 @@ function handleOnClick() {
 					else {
 						sF = json1[2][i].toFixed(12)
 					}
-					myWindow.document.getElementById("new").innerHTML += "(" + hkl + ")" + "&emsp;" + tt + "&emsp;" + sF + "<br/>"
+					myWindow.document.getElementById("new").innerHTML += "(" + hkl + ")" + "&emsp;" + tt + "&emsp;" + sF + "<br/>";
 				}
+				console.log(data[0][0])
+				console.log(json1[3].length)
+				for(k = 0; k < json1[3].length; k++) {
+					data[0][j].push([json1[3][k], json1[4][k]])
+					data[0][(j+1)].push([json1[3][k], (data[0][0][k][1] - json1[4][k])])
+				}
+				//console.log(data)
 			}
 			document.getElementById('mybtn').disabled = false;
 		}
 		xhr.send(json);
-		console.log(json);
+		//console.log(json);
 	}
 }
 
@@ -92,4 +113,8 @@ function checkRow(row) {
 		}
 	}
 	return count;
+}
+
+function funClick() {
+	num = 2;
 }

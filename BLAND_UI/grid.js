@@ -1,9 +1,9 @@
 var Grid = React.createClass({displayName: 'component',
 
-    getInitialState : function(){
+    /*getInitialState : function(){
       var fakeRows = createRows(10);
       return {rows :fakeRows};
-    },
+    },*/
 
     getColumns: function() {
       var clonedColumns = columns.slice();
@@ -56,21 +56,22 @@ var Grid = React.createClass({displayName: 'component',
   },
 
     handleGridRowsUpdated : function(updatedRowData) {
-
+      myState = store.getState()
+      tab = myState['myReducer4']['Selected'];
       for (var i = updatedRowData.fromRow; i <= updatedRowData.toRow; i++) {
 
 		switch(updatedRowData.cellKey) {
 			case 'label':
-				action = changeLabel(updatedRowData.updated.label, i)
+				action = changeLabel(updatedRowData.updated.label, i, tab)
 				break
 			case 'atom':
-				action = changeAtom(updatedRowData.updated.atom, i)
+				action = changeAtom(updatedRowData.updated.atom, i, tab)
 				break
 			case 'valence':
-				action = changeValence(updatedRowData.updated.valence, i)
+				action = changeValence(updatedRowData.updated.valence, i, tab)
 				break
 			case 'isotope':
-				action = changeIsotope(updatedRowData.updated.isotope, i)
+				action = changeIsotope(updatedRowData.updated.isotope, i, tab)
 				break
 			//case 'wyckoff':
 			//	action = changeWyckoff(updatedRowData.updated.wyckoff, i)
@@ -84,7 +85,7 @@ var Grid = React.createClass({displayName: 'component',
 					alert('Please enter a number between 0 and 1')
 					break
 				}
-				action = changeX(updatedRowData.updated.x, i)
+				action = changeX(updatedRowData.updated.x, i, tab)
 				break
 			case 'y':
 				if(Number.isNaN(Number(updatedRowData.updated.y))) {
@@ -95,7 +96,7 @@ var Grid = React.createClass({displayName: 'component',
 					alert('Please enter a number between 0 and 1')
 					break
 				}
-				action = changeY(updatedRowData.updated.y, i)
+				action = changeY(updatedRowData.updated.y, i, tab)
 				break
 			case 'z':
 				if(Number.isNaN(Number(updatedRowData.updated.z))) {
@@ -106,7 +107,7 @@ var Grid = React.createClass({displayName: 'component',
 					alert('Please enter a number between 0 and 1')
 					break
 				}
-				action = changeZ(updatedRowData.updated.z, i)
+				action = changeZ(updatedRowData.updated.z, i, tab)
 				break
 			case 'occupancy':
 				if(Number.isNaN(Number(updatedRowData.updated.occupancy))) {
@@ -117,10 +118,10 @@ var Grid = React.createClass({displayName: 'component',
 					alert('Please enter a number between 0 and 1')
 					break
 				}
-				action = changeOccupancy(updatedRowData.updated.occupancy, i)
+				action = changeOccupancy(updatedRowData.updated.occupancy, i, tab)
 				break
 			case 'thermal':
-				action = changeB(updatedRowData.updated.thermal, i)
+				action = changeB(updatedRowData.updated.thermal, i, tab)
 				break
 			default:
 				action = doNothing()
@@ -142,7 +143,8 @@ var Grid = React.createClass({displayName: 'component',
 		occupancy : '',
 		thermal : ''
 		};
-		action = addRow(newRow);
+    tab = myState['myReducer4']['Selected'];
+		action = addRow(newRow, tab);
 		store.dispatch(action);
     },
 
@@ -151,14 +153,17 @@ var Grid = React.createClass({displayName: 'component',
         return undefined;
       }
   	  const myState = store.getState();
-  	  const real = myState['myReducer'];
+      const tab = myState['myReducer4']['Selected'];
+      //console.log('tab is ', tab)
+  	  const real = myState['myReducer4']['Phases'][tab][0];
       return real[index];
     },
 
     getSize : function() {
 	  const myState = store.getState()
-	  const real = myState['myReducer'];
-      return real.length;
+    const tab = myState['myReducer4']['Selected'];
+	  const real = myState['myReducer4']['Phases'][tab][0];
+    return real.length;
     },
 
     handleMount: function() {
@@ -168,6 +173,7 @@ var Grid = React.createClass({displayName: 'component',
 
     render : function() {
         document.getElementById('inner').style.visibility = 'visible';
+        document.getElementById('below').style.visibility = 'hidden';
         return (
               React.createElement(ReactDataGrid, {
                   ref: 'grid',
@@ -178,7 +184,7 @@ var Grid = React.createClass({displayName: 'component',
                   onGridRowsUpdated: this.handleGridRowsUpdated,
                   toolbar: React.createElement(Toolbar, {onAddRow: this.handleAddRow}),
                   rowHeight: 50,
-                  minHeight: 558,
+                  minHeight: 358,
                   rowScrollTimeout: 200,
                   componentDidMount: this.handleMount(),
                 })

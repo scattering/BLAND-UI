@@ -12,47 +12,47 @@ const ADD_ROW = 'ADD_ROW'
 const CHANGE_WHOLE_ROW = 'CHANGE_WHOLE_ROW'
 const DO_NOTHING = 'DO_NOTHING'
 
-function changeLabel(text, index) {
-	return {type: CHANGE_LABEL, text, index}
+function changeLabel(text, index, tab) {
+	return {type: CHANGE_LABEL, text, index, tab}
 }
 
-function changeAtom(text, index) {
-	return {type: CHANGE_ATOM, text, index}
+function changeAtom(text, index, tab) {
+	return {type: CHANGE_ATOM, text, index, tab}
 }
 
-function changeValence(number, index) {
-	return {type: CHANGE_VALENCE, number, index}
+function changeValence(number, index, tab) {
+	return {type: CHANGE_VALENCE, number, index, tab}
 }
-function changeIsotope(number, index) {
-	return {type: CHANGE_ISOTOPE, number, index}
+function changeIsotope(number, index, tab) {
+	return {type: CHANGE_ISOTOPE, number, index, tab}
 }
 
 //function changeWyckoff(text, index) {
 //	return {type: CHANGE_WYCKOFF, text, index}
 //}
 
-function changeX(number, index) {
-	return {type: CHANGE_X, number, index}
+function changeX(number, index, tab) {
+	return {type: CHANGE_X, number, index, tab}
 }
-function changeY(number, index) {
-	return {type: CHANGE_Y, number, index}
-}
-
-function changeZ(number, index) {
-	return {type: CHANGE_Z, number, index}
+function changeY(number, index, tab) {
+	return {type: CHANGE_Y, number, index, tab}
 }
 
-function changeOccupancy(number, index) {
-	return {type: CHANGE_OCCUPANCY, number, index}
+function changeZ(number, index, tab) {
+	return {type: CHANGE_Z, number, index, tab}
 }
-function changeB(text, index) {
-	return {type: CHANGE_B, text, index}
+
+function changeOccupancy(number, index, tab) {
+	return {type: CHANGE_OCCUPANCY, number, index, tab}
 }
-function addRow(obj) {
-	return {type: ADD_ROW, obj}
+function changeB(text, index, tab) {
+	return {type: CHANGE_B, text, index, tab}
 }
-function changeWholeRow(label, atom, valence, isotope, x, y, z, occupancy, thermal, index) {
-	return {type: CHANGE_WHOLE_ROW, label, atom, valence, isotope, x, y, z, occupancy, thermal, index}
+function addRow(obj, tab) {
+	return {type: ADD_ROW, obj, tab}
+}
+function changeWholeRow(label, atom, valence, isotope, x, y, z, occupancy, thermal, index, tab) {
+	return {type: CHANGE_WHOLE_ROW, label, atom, valence, isotope, x, y, z, occupancy, thermal, index, tab}
 }
 function doNothing() {
 	return {type: DO_NOTHING}
@@ -69,29 +69,29 @@ const CHANGE_BETA = 'CHANGE_BETA'
 const CHANGE_GAMMA = 'CHANGE_GAMMA'
 const CHANGE_CELL = 'CHANGE_CELL'
 
-function changeSpace(text, index) {
-	return {type: CHANGE_SPACE, text, index}
+function changeSpace(text, index, tab) {
+	return {type: CHANGE_SPACE, text, index, tab}
 }
-function changeA(number, index) {
-	return {type: CHANGE_A, number, index}
+function changeA(number, index, tab) {
+	return {type: CHANGE_A, number, index, tab}
 }
-function changeBee(number, index) {
-	return {type: CHANGE_BEE, number, index}
+function changeBee(number, index, tab) {
+	return {type: CHANGE_BEE, number, index, tab}
 }
-function changeC(number, index) {
-	return {type: CHANGE_C, number, index}
+function changeC(number, index, tab) {
+	return {type: CHANGE_C, number, index, tab}
 }
-function changeAlpha(number, index) {
-	return {type: CHANGE_ALPHA, number, index}
+function changeAlpha(number, index, tab) {
+	return {type: CHANGE_ALPHA, number, index, tab}
 }
-function changeBeta(number, index) {
-	return {type: CHANGE_BETA, number, index}
+function changeBeta(number, index, tab) {
+	return {type: CHANGE_BETA, number, index, tab}
 }
-function changeGamma(number, index) {
-	return {type: CHANGE_GAMMA, number, index}
+function changeGamma(number, index, tab) {
+	return {type: CHANGE_GAMMA, number, index, tab}
 }
-function changeCell(space, a, b, c, alpha, beta, gamma) {
-	return {type: CHANGE_CELL, space, a, b, c, alpha, beta, gamma}
+function changeCell(space, a, b, c, alpha, beta, gamma, tab) {
+	return {type: CHANGE_CELL, space, a, b, c, alpha, beta, gamma, tab}
 }
 
 
@@ -134,11 +134,16 @@ function changeTMax(number, index) {
 }
 
 
-/*const ADD_FILE = 'ADD_FILE'
-const REMOVE_FILE = 'REMOVE_FILE'
-function addFile(obj) {
-	return {type: ADD_FILE, obj}
+const ADD_PHASE = 'ADD_PHASE'
+const REMOVE_PHASE = 'REMOVE_PHASE'
+const CHANGE_TAB = 'CHANGE_TAB'
+
+function addPhase() {
+	return {type: ADD_PHASE}
 }
-function removeFile() {
-	return {type: REMOVE_FILE}
-}*/
+function removePhase(index) {
+	return {type: REMOVE_PHASE, index}
+}
+function changeTab(index) {
+	return {type: CHANGE_TAB, index}
+}

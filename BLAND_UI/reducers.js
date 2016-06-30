@@ -52,8 +52,9 @@ function create3(numberOfRows) {
 }
 
 const initialState = createRows(10);
+const initialState01 = createRows(10);
 
-function myReducer(state = initialState, action) {
+/*function myReducer(state = initialState, action) {
 
 	switch(action.type) {
 		case CHANGE_LABEL:
@@ -160,11 +161,12 @@ function myReducer(state = initialState, action) {
 	var newState = state;
 	newState[action.index] = updatedRow;
 	return newState;
-};
+};*/
 
 const initialState2 = create2(1);
+const initialState02 = create2(1);
 
-function myReducer2(state = initialState2, action) {
+/*function myReducer2(state = initialState2, action) {
 	switch(action.type) {
 		case CHANGE_SPACE:
 			newProperty = {
@@ -238,7 +240,7 @@ function myReducer2(state = initialState2, action) {
 	var oldState = state[0];
 	var updatedRow = React.addons.update(oldState, {$merge: newProperty});
 	return [updatedRow];
-}
+}*/
 
 const initialState3 = create3(1);
 
@@ -315,9 +317,259 @@ function myReducer4(state = initialState4, action) {
   return oldState
 }*/
 
+
+const initialState4 = {'Phases': [[createRows(6), create2(1)]], 'Selected': 0}
+
+function myReducer4(state = initialState4, action) {
+  switch(action.type) {
+        case ADD_PHASE:
+          newState = state;
+          newState['Phases'].push([createRows(6), create2(1)]);
+          return newState;
+        case REMOVE_PHASE:
+          newState = state;
+          newState['Phases'].splice(action.index, 1);
+          return newState;
+        case CHANGE_TAB:
+          newState = state;
+          newState['Selected'] = action.index;
+          return newState;
+        case CHANGE_LABEL:
+    			newProperty = {
+    				label: action.text
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		case CHANGE_ATOM:
+    			newProperty = {
+    				atom: action.text
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		case CHANGE_VALENCE:
+    			newProperty = {
+    				valence: action.number
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		case CHANGE_ISOTOPE:
+    			newProperty = {
+    				isotope: action.number
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		//case CHANGE_WYCKOFF:
+    		//	newProperty = {
+    		//		wyckoff: action.text
+    		//	}
+    		//	break
+    		case CHANGE_X:
+    			newProperty = {
+    				x: action.number
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		case CHANGE_Y:
+    			newProperty = {
+    				y: action.number
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		case CHANGE_Z:
+    			newProperty = {
+    				z: action.number
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		case CHANGE_OCCUPANCY:
+    			newProperty = {
+    				occupancy: action.number
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		case CHANGE_B:
+    			newProperty = {
+    				thermal: action.text
+    			}
+          var rowToUpdate = state['Phases'][action.tab][0][action.index];
+          var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
+        	var newState = state;
+        	newState['Phases'][action.tab][0][action.index] = updatedRow;
+        	return newState;
+    		case ADD_ROW:
+    			var newState = state['Phases'][action.tab][0];
+    			var newRow = action.obj;
+    			var rows = React.addons.update(newState, {$push : [newRow]});
+    			return rows;
+        case CHANGE_WHOLE_ROW:
+          var oldRow = state['Phases'][action.tab][0][action.index];
+          newProp1 = {
+            label: action.label
+          }
+          newProp2 = {
+            atom: action.atom
+          }
+          newProp3 = {
+            valence: action.valence
+          }
+          newProp4 = {
+            isotope: action.isotope
+          }
+          newProp5 = {
+            x: action.x
+          }
+          newProp6 = {
+            y: action.y
+          }
+          newProp7 = {
+            z: action.z
+          }
+          newProp8 = {
+            occupancy: action.occupancy
+          }
+          newProp9 = {
+            thermal: action.thermal
+          }
+          newrow1 = React.addons.update(oldRow, {$merge: newProp1});
+          newrow2 = React.addons.update(newrow1, {$merge: newProp2});
+          newrow3 = React.addons.update(newrow2, {$merge: newProp3});
+          newrow4 = React.addons.update(newrow3, {$merge: newProp4});
+          newrow5 = React.addons.update(newrow4, {$merge: newProp5});
+          newrow6 = React.addons.update(newrow5, {$merge: newProp6});
+          newrow7 = React.addons.update(newrow6, {$merge: newProp7});
+          newrow8 = React.addons.update(newrow7, {$merge: newProp8});
+          newrow9 = React.addons.update(newrow8, {$merge: newProp9});
+          newState = state;
+          newState['Phases'][action.tab][0][action.index] = newrow9;
+          return newState;
+        case CHANGE_SPACE:
+    			newProperty = {
+    				space: action.text
+    			}
+          var oldState = state
+          var oldRow = state['Phases'][action.tab][1][0];
+        	var updatedRow = React.addons.update(oldRow, {$merge: newProperty});
+          oldState['Phases'][action.tab][1][0] = updatedRow;
+        	return oldState;
+    		case CHANGE_A:
+    			newProperty = {
+    				a: action.number
+    			}
+          var oldState = state
+          var oldRow = state['Phases'][action.tab][1][0];
+        	var updatedRow = React.addons.update(oldRow, {$merge: newProperty});
+          oldState['Phases'][action.tab][1][0] = updatedRow;
+        	return oldState;
+    		case CHANGE_BEE:
+    			newProperty = {
+    				b: action.number
+    			}
+          var oldState = state
+          var oldRow = state['Phases'][action.tab][1][0];
+        	var updatedRow = React.addons.update(oldRow, {$merge: newProperty});
+          oldState['Phases'][action.tab][1][0] = updatedRow;
+        	return oldState;
+    		case CHANGE_C:
+    			newProperty = {
+    				c: action.number
+    			}
+          var oldState = state
+          var oldRow = state['Phases'][action.tab][1][0];
+        	var updatedRow = React.addons.update(oldRow, {$merge: newProperty});
+          oldState['Phases'][action.tab][1][0] = updatedRow;
+        	return oldState;
+    		case CHANGE_ALPHA:
+    			newProperty = {
+    				alpha: action.number
+    			}
+          var oldState = state
+          var oldRow = state['Phases'][action.tab][1][0];
+        	var updatedRow = React.addons.update(oldRow, {$merge: newProperty});
+          oldState['Phases'][action.tab][1][0] = updatedRow;
+        	return oldState;
+    		case CHANGE_BETA:
+    			newProperty = {
+    				beta: action.number
+    			}
+          var oldState = state
+          var oldRow = state['Phases'][action.tab][1][0];
+        	var updatedRow = React.addons.update(oldRow, {$merge: newProperty});
+          oldState['Phases'][action.tab][1][0] = updatedRow;
+        	return oldState;
+    		case CHANGE_GAMMA:
+    			newProperty = {
+    				gamma: action.number
+    			}
+          var oldState = state;
+          var oldRow = state['Phases'][action.tab][1][0];
+        	var updatedRow = React.addons.update(oldRow, {$merge: newProperty});
+          oldState['Phases'][action.tab][1][0] = updatedRow;
+        	return oldState;
+        case CHANGE_CELL:
+          oldState = state;
+          var oldRow = state['Phases'][action.tab][1][0];
+          newProp1 = {
+            space: action.space
+          }
+          newProp2 = {
+            a: action.a
+          }
+          newProp3 = {
+            b: action.b
+          }
+          newProp4 = {
+            c: action.c
+          }
+          newProp5 = {
+            alpha: action.alpha
+          }
+          newProp6 = {
+            beta: action.beta
+          }
+          newProp7 = {
+            gamma: action.gamma
+          }
+          newrow1 = React.addons.update(oldRow, {$merge: newProp1});
+          newrow2 = React.addons.update(newrow1, {$merge: newProp2});
+          newrow3 = React.addons.update(newrow2, {$merge: newProp3});
+          newrow4 = React.addons.update(newrow3, {$merge: newProp4});
+          newrow5 = React.addons.update(newrow4, {$merge: newProp5});
+          newrow6 = React.addons.update(newrow5, {$merge: newProp6});
+          newrow7 = React.addons.update(newrow6, {$merge: newProp7});
+          oldState['Phases'][action.tab][1][0] = newrow7;
+          return oldState;
+        default:
+          return state
+        }
+
+  }
+
+
 var reducers = Redux.combineReducers({
-	myReducer,
-	myReducer2,
-	myReducer3//,
-  //myReducer4
+	myReducer3,
+  myReducer4
 })

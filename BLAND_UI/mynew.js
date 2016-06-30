@@ -1,4 +1,4 @@
-var Tabs = ReactSimpleTabs;
+//var Tabs = ReactSimpleTabs;
 /*var App = React.createClass({
 
   handleOnMount: function(selectedIndex, $selectedPanel, $selectedTabMenu) {
@@ -159,27 +159,33 @@ var MainLayout = React.createClass ({
 						React.createElement(Navbar.Brand, null,
 							React.createElement(IndexLink,
 								{ to: "/bland/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'}, onClick: this.handleClick1 },
-								"Home"
+								"Help"
 							)
 						)
 					),
 					React.createElement(Nav, { bsStyle: "pills", pullLeft: false },
 						React.createElement(NavItem, {eventKey: 1 },
 							React.createElement(Link,
-								{ to: "/bland/cell/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
-								"Unit Cell"
+								{ to: "/bland/instrument/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
+								"Instrument"
 							)
 						),
 						React.createElement(NavItem, {eventKey: 2},
 							React.createElement(Link,
-								{ to: "/bland/grid/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
-								"Atoms"
+								{ to: "/bland/models/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
+								"Models"
 							)
 						),
+						/*React.createElement(NavItem, {eventKey: 3},
+							React.createElement(Link,
+								{ to: "/bland/cell/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
+								"Unit Cell"
+							)
+						),*/
 						React.createElement(NavItem, {eventKey: 3},
 							React.createElement(Link,
-								{ to: "/bland/instrument/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
-								"Instrument"
+								{ to: "/bland/results/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
+								"Results"
 							)
 						)
 					)
@@ -190,11 +196,12 @@ var MainLayout = React.createClass ({
 });
 
 
-var Home = React.createClass({
-  displayName: "Home",
+var Help = React.createClass({
+  displayName: "Help",
 
   render: function render() {
 		document.getElementById('inner').style.visibility = 'hidden';
+		document.getElementById('below').style.visibility = 'hidden';
     return React.createElement(
       "h1",
       {style: {'textAlign': 'center', 'verticalAlign': 'middle'} },
@@ -210,9 +217,11 @@ ReactDOM.render(React.createElement(
   React.createElement(
 	Route,
 	{ path: "/bland/", component: MainLayout },
-	React.createElement(IndexRoute, { component: Home }),
-	React.createElement(Route, { path: "/bland/cell/", component: Cell }),
-	React.createElement(Route, { path: "/bland/grid/", component: Grid }),
-	React.createElement(Route, { path: "/bland/instrument/", component: Instrument })
+	React.createElement(IndexRoute, { component: Help }),
+	React.createElement(Route, { path: "/bland/instrument/", component: Instrument }),
+	//React.createElement(Route, { path: "/bland/cell/", component: Cell }),
+	//React.createElement(Route, { path: "/bland/grid/", component: Grid }),
+	React.createElement(Route, { path: "/bland/models/", component: Models }),
+	React.createElement(Route, {path: "/bland/results/", component: Results })
   )
 ), document.getElementById('content'));
