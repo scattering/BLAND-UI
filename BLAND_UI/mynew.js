@@ -123,9 +123,9 @@ var NavItem = ReactBootstrap.NavItem;
 });*/
 
 
-var MainLayout = React.createClass ({
+var MainLayout1 = React.createClass ({
 
-	displayName: "MainLayout",
+	displayName: "MainLayout1",
 
 	handleClick1: function(e) {
 		if(document.getElementById('mybtn').style.visibility === "visible") {
@@ -163,7 +163,7 @@ var MainLayout = React.createClass ({
 							)
 						)
 					),
-					React.createElement(Nav, { bsStyle: "pills", pullLeft: false },
+					React.createElement(Nav, { bsStyle: "tabs", pullLeft: false },
 						React.createElement(NavItem, {eventKey: 1 },
 							React.createElement(Link,
 								{ to: "/bland/instrument/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
@@ -182,6 +182,12 @@ var MainLayout = React.createClass ({
 								"Unit Cell"
 							)
 						),*/
+						React.createElement(NavItem, {eventKey: 4},
+							React.createElement(Link,
+								{ to: "/bland/fit/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
+								"Fit"
+							)
+						),
 						React.createElement(NavItem, {eventKey: 3},
 							React.createElement(Link,
 								{ to: "/bland/results/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
@@ -194,7 +200,6 @@ var MainLayout = React.createClass ({
 		);
 	}
 });
-
 
 var Help = React.createClass({
   displayName: "Help",
@@ -210,18 +215,18 @@ var Help = React.createClass({
   }
 });
 
-
 ReactDOM.render(React.createElement(
   Router,
   {history: browserHistory },
   React.createElement(
 	Route,
-	{ path: "/bland/", component: MainLayout },
+	{ path: "/bland/", component: MainLayout1 },
 	React.createElement(IndexRoute, { component: Help }),
 	React.createElement(Route, { path: "/bland/instrument/", component: Instrument }),
 	//React.createElement(Route, { path: "/bland/cell/", component: Cell }),
 	//React.createElement(Route, { path: "/bland/grid/", component: Grid }),
 	React.createElement(Route, { path: "/bland/models/", component: Models }),
+	React.createElement(Route, {path: "/bland/fit/", component: Fit }),
 	React.createElement(Route, {path: "/bland/results/", component: Results })
   )
 ), document.getElementById('content'));

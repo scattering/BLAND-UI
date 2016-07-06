@@ -1196,7 +1196,7 @@ def diffPattern(infoFile=None, backgroundFile=None, wavelength=1.5403,
     if plot:
         plotPattern(peaks, background, observedData[0], observedData[1],
                     ttMin, ttMax, ttStep, exclusions, labels=labels, base=base, residuals=residuals, error=error)
-        #pylab.show()
+        pylab.show()
         pylab.savefig(os.path.join('/tmp/bland',str('plot.jpg')), dpi=2000)
     if saveFile:
         np.savetxt(saveFile, (tt, intensity), delimiter=" ")

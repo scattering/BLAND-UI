@@ -1,0 +1,12 @@
+
+import os,sys;sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+DATAPATH = os.path.dirname(os.path.abspath(__file__))
+backgFile = os.path.join(DATAPATH,"pbso4.bac")
+
+with open(backgFile) as fp:
+	content = fp.readlines()
+
+
+for i in range(len(content)):
+	print content[i]

@@ -19,5 +19,6 @@ urlpatterns = [
     url(r'^grid/$', views.IndexView.as_view(), name='index'),
     url(r'^instrument/$', views.IndexView.as_view(), name='index'),
     url(r'^results/$', views.IndexView.as_view(), name='index'),
-    url(r'^models/$', views.IndexView.as_view(), name='index')
+    url(r'^models/$', views.IndexView.as_view(), name='index'),
+    url(r'^fit/$', views.IndexView.as_view(), name='fit')
     ]

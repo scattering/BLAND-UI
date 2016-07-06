@@ -350,12 +350,11 @@ function xyChart(options_override) {
                 .attr("height", 10)
                 .style("fill", colors[i%colors.length])
                 .on("mouseover", function() {
-                  d3.selectAll('.line')[0][i].classList.add('highlight');
+                  //d3.selectAll('.line')[0][i].classList.add('highlight');
                 })
                 .on("mouseout", function() {
-                  d3.selectAll('.line')[0][i].classList.remove('highlight');
+                  //d3.selectAll('.line')[0][i].classList.remove('highlight');
                 });
-
               g.append("text")
                 .attr("x", 15-options.legend.left)
                 .attr("y", i * 25 + 25)
@@ -364,10 +363,10 @@ function xyChart(options_override) {
                 .style("text-anchor", "start")
                 .style("fill", colors[i%colors.length])
                 .on("mouseover", function() {
-                  d3.selectAll('.line')[0][i].classList.add('highlight');
+                    //d3.selectAll('.line')[0][i].classList.add('highlight');
                 })
                 .on("mouseout", function() {
-                  d3.selectAll('.line')[0][i].classList.remove('highlight');
+                    //d3.selectAll('.line')[0][i].classList.remove('highlight');
                 });
             });
           el.selectAll("text")

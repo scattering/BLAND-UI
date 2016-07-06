@@ -203,6 +203,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
+		deselectCells: function() {
+			this.setState({ selected: { rowIdx: -1, idx: -1 } });
+		},
+
 	  onCellClick: function onCellClick(cell) {
 	    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
 	  },
@@ -4321,7 +4325,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        modalContent.setAttribute('tabIndex', -1);
 	        _warning2['default'](false, 'The modal content node does not accept focus. ' + 'For the benefit of assistive technologies, the tabIndex of the node is being set to "-1".');
 	      }
-
 	      modalContent.focus();
 	    }
 	  },

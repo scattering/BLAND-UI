@@ -75,6 +75,7 @@ var Models = React.createClass({displayName: 'models',
 
   render: function() {
     state = store.getState();
+    //console.log(this.refs.grid)
     myState = state['myReducer4']['Phases'];
     //console.log(state)
     return (
@@ -84,7 +85,7 @@ var Models = React.createClass({displayName: 'models',
         ),
         React.createElement(Tabs, { onSelect: this.handleSelect, selectedIndex: store.getState()['myReducer4']['Selected'] },
           React.createElement(TabList, null,
-            myState.map((tab, i) => {
+            myState.map((phase, i) => {
               return (
                 React.createElement(Tab, {key: i}, "Phase " + (i + 1), React.createElement("a", {style: {'marginLeft': '10px', 'color': '#428bca'}, href:"#", onClick: this.removeTab.bind(this, i)}, "✕"))
               );
@@ -94,7 +95,7 @@ var Models = React.createClass({displayName: 'models',
             React.createElement(Tab, null, "Baz")*/
 
           ),
-          myState.map((tab, i) => {
+          myState.map((phase, i) => {
             //console.log("hello world")
             return (
               React.createElement(TabPanel, {key:i},

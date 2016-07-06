@@ -48,15 +48,16 @@ function handleOnClick() {
 				var mod = 0
 				var arr = []
 				myWindow.document.getElementById("new").innerHTML = "&nbsp;h k l&nbsp; &emsp;Two Theta&emsp;Struct Fact<hr align='left' width=200/>"
-				data[0].push([])
-				data[0].push([])
-				console.log(data[0].length)
+				//console.log(data[0].length)
+
 				if(data[0]) {
 					j = 1;
 				}
 				else {
 					j = 0;
+					data = [data]
 				}
+				data[0].push([])
 				for(i = 0; i < json1[1].length; i++) {
 					hkl = json1[0][i];
 					tt = json1[1][i].toPrecision(5);
@@ -68,12 +69,16 @@ function handleOnClick() {
 					}
 					myWindow.document.getElementById("new").innerHTML += "(" + hkl + ")" + "&emsp;" + tt + "&emsp;" + sF + "<br/>";
 				}
-				console.log(data[0][0])
-				console.log(json1[3].length)
+				console.log(data[0])
+				calculated = true
+				//console.log(json1[3].length)
 				for(k = 0; k < json1[3].length; k++) {
 					data[0][j].push([json1[3][k], json1[4][k]])
-					data[0][(j+1)].push([json1[3][k], (data[0][0][k][1] - json1[4][k])])
+					if(data[0]) {
+						data1.push([json1[3][k], (data[0][0][k][1] - json1[4][k])])
+					}
 				}
+				data1 = [[data1]];
 				//console.log(data)
 			}
 			document.getElementById('mybtn').disabled = false;

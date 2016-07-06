@@ -1,4 +1,4 @@
-var Grid = React.createClass({displayName: 'component',
+var Grid = onClickOutside(React.createClass({displayName: 'component',
 
     /*getInitialState : function(){
       var fakeRows = createRows(10);
@@ -7,53 +7,27 @@ var Grid = React.createClass({displayName: 'component',
 
     getColumns: function() {
       var clonedColumns = columns.slice();
-	  clonedColumns[1].events = {
-        onClick: function(ev, args) {
-          var idx = args.idx;
-          var rowIdx = args.rowIdx;
-          this.refs.grid.openCellEditor(rowIdx, idx);
-        }.bind(this)
-      }
-      clonedColumns[2].events = {
-        onClick: function(ev, args) {
-          var idx = args.idx;
-          var rowIdx = args.rowIdx;
-          this.refs.grid.openCellEditor(rowIdx, idx);
-        }.bind(this)
-      }
-	  clonedColumns[3].events = {
-        onClick: function(ev, args) {
-          var idx = args.idx;
-          var rowIdx = args.rowIdx;
-          this.refs.grid.openCellEditor(rowIdx, idx);
-        }.bind(this)
-      }
-	  /*clonedColumns[4].events = {
-        onClick: function(ev, args) {
-          var idx = args.idx;
-          var rowIdx = args.rowIdx;
-          this.refs.grid.openCellEditor(rowIdx, idx);
-        }.bind(this)
-      }*/
-	  clonedColumns[8].events = {
-        onClick: function(ev, args) {
-          var idx = args.idx;
-          var rowIdx = args.rowIdx;
-          this.refs.grid.openCellEditor(rowIdx, idx);
-        }.bind(this)
-      }
+  	  clonedColumns.map((col, idx) => {
+        col.events = {
+          onClick: function(ev, args) {
+            var idx = args.idx;
+            var rowIdx = args.rowIdx;
+            this.refs.grid.openCellEditor(rowIdx, idx);
+          }.bind(this)
+        }
+      })
       return clonedColumns;
     },
 
 	componentDidMount: function() {
-		store.subscribe(this.update);
+  	this.refs.grid.deselectCells();
 	},
 
-  update: function() {
-    if(this.isMounted()) {
-      this.forceUpdate();
-    }
-  },
+  //update: function() {
+  //  if(this.isMounted()) {
+  //    this.forceUpdate();
+  //  }
+  //},
 
     handleGridRowsUpdated : function(updatedRowData) {
       myState = store.getState()
@@ -67,12 +41,12 @@ var Grid = React.createClass({displayName: 'component',
 			case 'atom':
 				action = changeAtom(updatedRowData.updated.atom, i, tab)
 				break
-			case 'valence':
+			/*case 'valence':
 				action = changeValence(updatedRowData.updated.valence, i, tab)
 				break
 			case 'isotope':
 				action = changeIsotope(updatedRowData.updated.isotope, i, tab)
-				break
+				break*/
 			//case 'wyckoff':
 			//	action = changeWyckoff(updatedRowData.updated.wyckoff, i)
 			//	break
@@ -121,6 +95,10 @@ var Grid = React.createClass({displayName: 'component',
 				action = changeOccupancy(updatedRowData.updated.occupancy, i, tab)
 				break
 			case 'thermal':
+        if(Number.isNaN(Number(updatedRowData.updated.thermal))) {
+          alert('Please enter a number')
+          break
+        }
 				action = changeB(updatedRowData.updated.thermal, i, tab)
 				break
 			default:
@@ -132,20 +110,21 @@ var Grid = React.createClass({displayName: 'component',
 
     handleAddRow : function(e){
       var newRow = {
-		label: '',
-		atom: '',
-		//wyckoff: '',
-		valence : '',
-		isotope : '',
-		x : '',
-		y : '',
-		z : '',
-		occupancy : '',
-		thermal : ''
-		};
-    tab = myState['myReducer4']['Selected'];
-		action = addRow(newRow, tab);
-		store.dispatch(action);
+    		label: '',
+    		atom: '',
+    		//wyckoff: '',
+    		//valence : '',
+    		//isotope : '',
+    		x : '',
+    		y : '',
+    		z : '',
+    		occupancy : '',
+    		thermal : ''
+    		};
+      myState = store.getState();
+      tab = myState['myReducer4']['Selected'];
+  		action = addRow(newRow, tab);
+  		store.dispatch(action);
     },
 
     rowGetter : function(index){
@@ -157,6 +136,10 @@ var Grid = React.createClass({displayName: 'component',
       //console.log('tab is ', tab)
   	  const real = myState['myReducer4']['Phases'][tab][0];
       return real[index];
+    },
+
+    handleClickOutside: function (e) {
+      this.refs.grid.deselectCells();
     },
 
     getSize : function() {
@@ -190,4 +173,4 @@ var Grid = React.createClass({displayName: 'component',
                 })
         );
     }
-});
+}));

@@ -51,8 +51,8 @@ function changeB(text, index, tab) {
 function addRow(obj, tab) {
 	return {type: ADD_ROW, obj, tab}
 }
-function changeWholeRow(label, atom, valence, isotope, x, y, z, occupancy, thermal, index, tab) {
-	return {type: CHANGE_WHOLE_ROW, label, atom, valence, isotope, x, y, z, occupancy, thermal, index, tab}
+function changeWholeRow(label, atom, x, y, z, occupancy, thermal, index, tab) {
+	return {type: CHANGE_WHOLE_ROW, label, atom, x, y, z, occupancy, thermal, index, tab}
 }
 function doNothing() {
 	return {type: DO_NOTHING}
@@ -104,6 +104,7 @@ const CHANGE_ETA = 'CHANGE_ETA'
 const CHANGE_ZERO = 'CHANGE_ZERO'
 const CHANGE_TMIN = 'CHANGE_TMIN'
 const CHANGE_TMAX = 'CHANGE_TMAX'
+const CHANGE_MODE = 'CHANGE_MODE'
 
 function changeScale(number, index) {
 	return {type: CHANGE_SCALE, number, index}
@@ -131,6 +132,9 @@ function changeTMin(number, index) {
 }
 function changeTMax(number, index) {
 	return {type: CHANGE_TMAX, number, index}
+}
+function changeMode(text, index) {
+	return {type: CHANGE_MODE, text, index}
 }
 
 

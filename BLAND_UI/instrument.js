@@ -1,4 +1,4 @@
-var Instrument = React.createClass({displayName: 'component3',
+var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 
     /*getInitialState : function(){
       var fakeRows = create3(1);
@@ -7,14 +7,15 @@ var Instrument = React.createClass({displayName: 'component3',
 
     getColumns3: function() {
       var clonedColumns = columns3.slice();
-      /*clonedColumns[0].events = {
-        onClick: function(ev, args) {
-          var idx = args.idx;
-          var rowIdx = args.rowIdx;
-		  console.log(this.refs)
-          this.refs.cell.openCellEditor(rowIdx, idx);
-        }.bind(this)
-      }*/
+      clonedColumns.map((col, idx) => {
+        col.events = {
+          onClick: function(ev, args) {
+            var idx = args.idx;
+            var rowIdx = args.rowIdx;
+            this.refs.cell.openCellEditor(rowIdx, idx);
+          }.bind(this)
+        }
+      })
       return clonedColumns;
     },
 
@@ -27,6 +28,10 @@ var Instrument = React.createClass({displayName: 'component3',
     if(this.isMounted()) {
       this.forceUpdate();
     }
+  },
+
+  handleClickOutside: function (e) {
+    this.refs.cell.deselectCells();
   },
 
     handleGridRowsUpdated3 : function(updatedRowData) {
@@ -97,6 +102,9 @@ var Instrument = React.createClass({displayName: 'component3',
 				}
 				action = changeTMax(updatedRowData.updated.tmax, i)
 				break
+      case 'mode':
+        action = changeMode(updatedRowData.updated.mode, i)
+        break
 			default:
 				action = doNothing()
 		}
@@ -128,18 +136,18 @@ var Instrument = React.createClass({displayName: 'component3',
       document.getElementById('inner').style.visibility = 'hidden';
       document.getElementById('below').style.visibility = 'visible';
       return (
-	    React.createElement(ReactDataGrid, {
-	      ref: 'cell',
-	      enableCellSelect: true,
-	      columns: this.getColumns3(),
-	      rowGetter: this.rowGetter,
-	      rowsCount: this.getSize3(),
-	      onGridRowsUpdated: this.handleGridRowsUpdated3,
-	      rowHeight: 50,
-	      minHeight: 108,
-	      rowScrollTimeout: 200,
-	      componentDidMount: this.handleMount(),
-	      })
+  	    React.createElement(ReactDataGrid, {
+  	      ref: 'cell',
+  	      enableCellSelect: true,
+  	      columns: this.getColumns3(),
+  	      rowGetter: this.rowGetter,
+  	      rowsCount: this.getSize3(),
+  	      onGridRowsUpdated: this.handleGridRowsUpdated3,
+  	      rowHeight: 50,
+  	      minHeight: 108,
+  	      rowScrollTimeout: 200,
+  	      componentDidMount: this.handleMount(),
+  	      })
       );
     }
-});
+}));

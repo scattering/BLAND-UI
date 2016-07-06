@@ -378,9 +378,9 @@ class AtomListModel(object):
                 self.atomList = atoms[0]
                 self.atoms = atoms[0][:]
             else:
-                self.atomList = AtomList(atoms[0])
+                self.atomList = AtomList(atoms)
                 self.atoms = atoms
-            self.atomModels = [AtomModel(atom, self.sgmultip) for atom in atoms[0]]
+            self.atomModels = [AtomModel(atom, self.sgmultip) for atom in atoms]
         else:
             # a tuple containing a list of atoms and a list of magnetic atoms
             if (isinstance(atoms[0], AtomList)):

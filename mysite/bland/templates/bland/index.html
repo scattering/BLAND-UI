@@ -3,9 +3,9 @@
 	BLAND UI
     </title>
     <style>
-      #plot1 {
+      #plot1, #plot2 {
         width: 100%;
-        height: 40%;
+        height: 30%;
       }
       #addTab {
         class: 'btn';
@@ -129,7 +129,7 @@
 <link rel="stylesheet" type="text/css" href="http://localhost:8080/temp/dropzone.min.css"></link>
 <link rel="stylesheet" href="http://instructure-react.github.io/library/shared.css"/>
 
-<center><h1>Enter Your Parameters</h1></center>
+<center><h1>Welcome to BLAND UI</h1></center>
 
 <div id="content"></div>
 
@@ -141,9 +141,13 @@
 <div id="alignRight" style="text-align:right; margin-right:15px; margin-bottom:10px">
 	<br/><button id="mybtn" class="btn" onclick="handleOnClick()" type="button" style="visibility:hidden;">Calculate</button>
 </div>
+
 <!--div id="try">Click me!</div-->
 <script>
+  calculated = false
+  observed = false
   data = []
+  data1 = []
   var num = 1
   /*document.getElementById('try').addEventListener('click', function() {
     if(data[0]) {
@@ -173,6 +177,7 @@
 <script src="http://localhost:8080/temp/react-bootstrap.js"></script>
 <script src="http://localhost:8080/temp/react-dropzone.js"></script>
 <script src="http://localhost:8080/temp/react-tabs.js"></script>
+<script src="http://localhost:8080/temp/react-onclickoutside.js"></script>
 <script type="text/javascript" src="http://localhost:8080/actions.js"></script>
 <script type="text/javascript" src="http://localhost:8080/reducers.js"></script>
 <script type="text/javascript" src="http://localhost:8080/store.js"></script>
@@ -184,4 +189,5 @@
 <script type="text/javascript" src="http://localhost:8080/grid.js"></script>
 <script type="text/javascript" src="http://localhost:8080/results.js"></script>
 <script type="text/javascript" src="http://localhost:8080/models.js"></script>
+<script type="text/javascript" src="http://localhost:8080/fit.js"></script>
 <script type="text/javascript" src="http://localhost:8080/mynew.js"></script>

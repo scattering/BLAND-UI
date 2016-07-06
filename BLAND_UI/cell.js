@@ -1,4 +1,4 @@
-var Cell = React.createClass({displayName: 'component2',
+var Cell = onClickOutside(React.createClass({displayName: 'component2',
 
     /*getInitialState : function(){
       var fakeRows = create2(1);
@@ -7,27 +7,33 @@ var Cell = React.createClass({displayName: 'component2',
 
     getColumns2: function() {
         var clonedColumns = columns2.slice();
-        clonedColumns[0].events = {
-          onClick: function(ev, args) {
+        clonedColumns.map((col, idx) => {
+          col.events = {
+            onClick: function(ev, args) {
               var idx = args.idx;
               var rowIdx = args.rowIdx;
               this.refs.cell.openCellEditor(rowIdx, idx);
-          }.bind(this)
-        }
+            }.bind(this)
+          }
+        })
         return clonedColumns;
     },
 
   	componentDidMount1: function() {
       document.getElementById('mybtn').style.visibility = "visible";
   		//store.subscribe(() => this.forceUpdate());
-      store.subscribe(this.update);
+      //store.subscribe(this.update);
   	},
 
-    update: function() {
-      if (this.isMounted()) {
-        this.forceUpdate();
-      }
-    },
+  //  update: function() {
+  //    if (this.isMounted()) {
+  //      this.forceUpdate();
+  //    }
+  //  },
+
+  handleClickOutside: function (e) {
+    this.refs.cell.deselectCells();
+  },
 
     handleGridRowsUpdated2 : function(updatedRowData) {
       state = store.getState();
@@ -120,6 +126,7 @@ var Cell = React.createClass({displayName: 'component2',
                       rowGetter: this.rowGetter,
                       rowsCount: this.getSize2(),
                       onGridRowsUpdated: this.handleGridRowsUpdated2,
+                      onClickOutside: this.handleClickOutside,
                       rowHeight: 50,
                       minHeight: 108,
                       rowScrollTimeout: 200,
@@ -137,7 +144,7 @@ var Cell = React.createClass({displayName: 'component2',
       	//)
       );
     }
-});
+}));
 
 
 //document.getElementById('place').innerHTML += React.createElement("div", {id: 'drop', style: { 'width': '300px', 'marginTop': '10px'}})

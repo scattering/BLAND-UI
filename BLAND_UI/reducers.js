@@ -5,11 +5,11 @@ function createRows(numberOfRows){
       label: '',
       atom: '',
       //wyckoff: '',
-      valence : '',
-      isotope : '',
+      //valence : '',
+      //isotope : '',
       x : '',
-	  y : '',
-	  z : '',
+	    y : '',
+	    z : '',
 	  occupancy : '',
       thermal : ''
     });
@@ -45,7 +45,8 @@ function create3(numberOfRows) {
 			eta: '',
 			zero: '',
 			tmin: '',
-			tmax: ''
+			tmax: '',
+      mode: ''
 		});
 	}
 	return _rows;
@@ -291,6 +292,11 @@ function myReducer3(state = initialState3, action) {
 				tmax: action.number
 			}
 			break
+    case CHANGE_MODE:
+      newProperty = {
+        mode: action.text
+      }
+      break
 		default:
 			return state
 	}
@@ -352,7 +358,7 @@ function myReducer4(state = initialState4, action) {
         	var newState = state;
         	newState['Phases'][action.tab][0][action.index] = updatedRow;
         	return newState;
-    		case CHANGE_VALENCE:
+    		/*case CHANGE_VALENCE:
     			newProperty = {
     				valence: action.number
     			}
@@ -364,7 +370,7 @@ function myReducer4(state = initialState4, action) {
     		case CHANGE_ISOTOPE:
     			newProperty = {
     				isotope: action.number
-    			}
+    			}*/
           var rowToUpdate = state['Phases'][action.tab][0][action.index];
           var updatedRow = React.addons.update(rowToUpdate, {$merge: newProperty});
         	var newState = state;
@@ -421,24 +427,27 @@ function myReducer4(state = initialState4, action) {
         	newState['Phases'][action.tab][0][action.index] = updatedRow;
         	return newState;
     		case ADD_ROW:
-    			var newState = state['Phases'][action.tab][0];
+    			var oldState = state['Phases'][action.tab][0];
     			var newRow = action.obj;
-    			var rows = React.addons.update(newState, {$push : [newRow]});
-    			return rows;
+    			var rows = React.addons.update(oldState, {$push : [newRow]});
+          newState = state;
+          newState['Phases'][action.tab][0] = rows;
+    			return newState;
         case CHANGE_WHOLE_ROW:
           var oldRow = state['Phases'][action.tab][0][action.index];
+          //console.log('1');
           newProp1 = {
             label: action.label
           }
           newProp2 = {
             atom: action.atom
           }
-          newProp3 = {
+          /*newProp3 = {
             valence: action.valence
           }
           newProp4 = {
             isotope: action.isotope
-          }
+          }*/
           newProp5 = {
             x: action.x
           }
@@ -454,17 +463,28 @@ function myReducer4(state = initialState4, action) {
           newProp9 = {
             thermal: action.thermal
           }
+          //console.log('2');
           newrow1 = React.addons.update(oldRow, {$merge: newProp1});
+          //console.log('3');
           newrow2 = React.addons.update(newrow1, {$merge: newProp2});
-          newrow3 = React.addons.update(newrow2, {$merge: newProp3});
-          newrow4 = React.addons.update(newrow3, {$merge: newProp4});
-          newrow5 = React.addons.update(newrow4, {$merge: newProp5});
+          //console.log('4');
+          //newrow3 = React.addons.update(newrow2, {$merge: newProp3});
+          //console.log('5');
+          //newrow4 = React.addons.update(newrow3, {$merge: newProp4});
+          //console.log('6');
+          newrow5 = React.addons.update(newrow2, {$merge: newProp5});
+          //console.log('7');
           newrow6 = React.addons.update(newrow5, {$merge: newProp6});
+          //console.log('8');
           newrow7 = React.addons.update(newrow6, {$merge: newProp7});
+          //console.log('9');
           newrow8 = React.addons.update(newrow7, {$merge: newProp8});
+          //console.log('10');
           newrow9 = React.addons.update(newrow8, {$merge: newProp9});
+          //console.log('11');
           newState = state;
           newState['Phases'][action.tab][0][action.index] = newrow9;
+          //console.log('12');
           return newState;
         case CHANGE_SPACE:
     			newProperty = {

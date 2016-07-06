@@ -263,14 +263,18 @@ def handle_uploaded_file(f):
 @csrf_exempt
 def data(request):
     print "Hello, sir/ma'am"
+    mode = request.POST['mode']
+    print type(str(mode))
     print request.FILES['file']
     fp = request.FILES['file']
-    for line in fp:
-	print line
+    
+    #for line in fp:
+	#print line
 	
     handle_uploaded_file(fp)
-    (tt, observed, error) = H.readIllData(os.path.join('/tmp/bland',str(fp.name)), "D1A", None)
-    print "tt   observed    error"
+    print mode
+    (tt, observed, error) = H.readIllData(os.path.join('/tmp/bland',str(fp.name)), str(mode), None)
+    #print "tt   observed    error"
     print list(tt), list(observed), list(error)
     ret = [list(tt), list(observed), list(error)]
     ret = json.dumps(ret)
