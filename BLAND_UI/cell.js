@@ -50,6 +50,7 @@ var Cell = onClickOutside(React.createClass({displayName: 'component2',
     					break
     				}
     				action = changeA(updatedRowData.updated.a, i, tab)
+            store.dispatch(removeFit('a' + (tab + 1)))
     				break
     			case 'b':
     				if(Number.isNaN(Number(updatedRowData.updated.b))) {
@@ -57,6 +58,7 @@ var Cell = onClickOutside(React.createClass({displayName: 'component2',
     					break
     				}
     				action = changeBee(updatedRowData.updated.b, i, tab)
+            store.dispatch(removeFit('b' + (tab + 1)))
     				break
     			case 'c':
     				if(Number.isNaN(Number(updatedRowData.updated.c))) {
@@ -64,6 +66,7 @@ var Cell = onClickOutside(React.createClass({displayName: 'component2',
     					break
     				}
     				action = changeC(updatedRowData.updated.c, i, tab)
+            store.dispatch(removeFit('c' + (tab + 1)))
     				break
     			case 'alpha':
     				if(Number.isNaN(Number(updatedRowData.updated.alpha))) {
@@ -71,6 +74,7 @@ var Cell = onClickOutside(React.createClass({displayName: 'component2',
     						break
     					}
     				action = changeAlpha(updatedRowData.updated.alpha, i, tab)
+            store.dispatch(removeFit('alpha' + (tab + 1)))
     				break
     			case 'beta':
     				if(Number.isNaN(Number(updatedRowData.updated.beta))) {
@@ -78,6 +82,7 @@ var Cell = onClickOutside(React.createClass({displayName: 'component2',
     					break
     				}
     				action = changeBeta(updatedRowData.updated.beta, i, tab)
+            store.dispatch(removeFit('beta' + (tab + 1)))
     				break
     			case 'gamma':
     				if(Number.isNaN(Number(updatedRowData.updated.gamma))) {
@@ -85,6 +90,7 @@ var Cell = onClickOutside(React.createClass({displayName: 'component2',
     					break
     				}
     				action = changeGamma(updatedRowData.updated.gamma, i, tab)
+            store.dispatch(removeFit('gamma' + (tab + 1)))
     				break
     			default:
     				action = doNothing()

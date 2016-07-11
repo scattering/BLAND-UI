@@ -434,6 +434,8 @@ function myReducer4(state = initialState4, action) {
           newState['Phases'][action.tab][0] = rows;
     			return newState;
         case CHANGE_WHOLE_ROW:
+          console.log(action)
+          console.log(state['Phases'])
           var oldRow = state['Phases'][action.tab][0][action.index];
           //console.log('1');
           newProp1 = {
@@ -588,8 +590,35 @@ function myReducer4(state = initialState4, action) {
 
   }
 
+const initialState5 = [{}];
+
+function myReducer5(state = initialState5, action) {
+  switch(action.type) {
+        case ADD_FIT:
+          newState = state[0];
+          newState[action.name] = {};
+          return [newState];
+        case REMOVE_FIT:
+          newState = state[0];
+          delete newState[action.name]
+          return [newState];
+        case CHANGE_PM:
+        //console.log(state)
+          newState = state[0];
+          //console.log(newState)
+          //console.log(action.value)
+          newState[action.id]['name'] = action.name;
+          newState[action.id]['phase'] = action.phase;
+          newState[action.id]['row'] = action.row;
+          newState[action.id]['pm'] = action.value;
+          return [newState];
+        default:
+          return state;
+    }
+}
 
 var reducers = Redux.combineReducers({
 	myReducer3,
-  myReducer4
+  myReducer4,
+  myReducer5
 })

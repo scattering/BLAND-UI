@@ -8,7 +8,7 @@ var DropDownEditor = ReactDataGrid.Editors.DropDownEditor;
 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
 'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc',
 'Lv', 'Ts', 'Og']*/
-var atoms = ['1  |  H', '2  |  He', '3  |  Li', '4  |  Be', '5  |  B', '6  |  C', '7  |  N', '8  |  O', '9  |  F', '10  |  Ne', '11  |  Na', '12  |  Mg', '13  |  Al',
+var atoms = ['', '1  |  H', '2  |  He', '3  |  Li', '4  |  Be', '5  |  B', '6  |  C', '7  |  N', '8  |  O', '9  |  F', '10  |  Ne', '11  |  Na', '12  |  Mg', '13  |  Al',
 '14  |  Si', '15  |  P', '16  |  S', '17  |  Cl', '18  |  Ar', '19  |  K', '20  |  Ca', '21  |  Sc', '22  |  Ti', '23  |  V', '24  |  Cr', '25  |  Mn', '26  |  Fe',
 '27  |  Co', '28  |  Ni', '29  |  Cu', '30  |  Zn', '31  |  Ga', '32  |  Ge', '33  |  As', '34  |  Se', '35  |  Br', '36  |  Kr', '37  |  Rb', '38  |  Sr', '39  |  Y',
 '40  |  Zr', '41  |  Nb', '42  |  Mo', '43  |  Tc', '44  |  Ru', '45  |  Rh', '46  |  Pd', '47  |  Ag', '48  |  Cd', '49  |  In', '50  |  Sn', '51  |  Sb', '52  |  Te',
@@ -33,12 +33,12 @@ var IsotopeEditor = React.createElement(DropDownEditor, {options: isotopes});
 //var therm = ['Isotropic', 'Anisotropic']
 //var ThermalEditor = React.createElement(DropDownEditor, {options: therm});
 
-var modes = ['D1B', 'D20', 'NLS', 'D1A', 'D2B', 'DMC', 'Socabim', 'XYSIGMA', 'GSAS', 'GSASTOF', 'PANalytical'];
+var modes = ['', 'D1B', 'D20', 'NLS', 'D1A', 'D2B', 'DMC', 'Socabim', 'XYSIGMA', 'GSAS', 'GSASTOF', 'PANalytical'];
 var ModeEditor = React.createElement(DropDownEditor, {options: modes});
 
-var space = []
-for(i = 0; i < 230; i++) {
-	space[i] = "Space group " + (i+1);
+var space = ['']
+for(i = 1; i < 230; i++) {
+	space[i] = "Space group " + (i);
 }
 var SpaceEditor = React.createElement(DropDownEditor, {options: space});
 

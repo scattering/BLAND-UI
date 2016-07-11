@@ -31,8 +31,12 @@ function handleOnClick() {
 	if(bad === false) {
 		//console.log(done);
 		document.getElementById('mybtn').disabled = true;
-		//console.log(myState)
-		const json = JSON.stringify(myState);
+		console.log(myState)
+		send = myState
+		send['tt'] = tt1;
+		send['obs'] = obs;
+		console.log(send)
+		const json = JSON.stringify(send);
 
 		xhr = new XMLHttpRequest();
 		var url = "http://localhost:8001/bland/calc/";
@@ -47,7 +51,7 @@ function handleOnClick() {
 				myWindow.document.write("<head><title>Results</title></head><p>Here are the results!</p><div id='new'></div>");
 				var mod = 0
 				var arr = []
-				myWindow.document.getElementById("new").innerHTML = "&nbsp;h k l&nbsp; &emsp;Two Theta&emsp;Struct Fact<hr align='left' width=200/>"
+				myWindow.document.getElementById("new").innerHTML = "&nbsp;h k l&nbsp; &emsp;Two Theta.Struct Fact<hr align='left' width=200/>"
 				//console.log(data[0].length)
 
 				if(data[0]) {
@@ -84,6 +88,8 @@ function handleOnClick() {
 			document.getElementById('mybtn').disabled = false;
 		}
 		xhr.send(json);
+		delete myState['tt']
+		delete myState['obs']
 		//console.log(json);
 	}
 }

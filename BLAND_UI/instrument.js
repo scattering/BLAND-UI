@@ -45,6 +45,7 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 					break
 				}
 				action = changeScale(updatedRowData.updated.scale, i)
+        store.dispatch(removeFit('scale'))
 				break
 			case 'wavelength':
 				if(Number.isNaN(Number(updatedRowData.updated.wavelength))) {
@@ -52,6 +53,7 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 					break
 				}
 				action = changeWavelength(updatedRowData.updated.wavelength, i)
+        store.dispatch(removeFit('wavelength'))
 				break
 			case 'u':
 				if(Number.isNaN(Number(updatedRowData.updated.u))) {
@@ -59,6 +61,7 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 					break
 				}
 				action = changeU(updatedRowData.updated.u, i)
+        store.dispatch(removeFit('u'))
 				break
 			case 'v':
 				if(Number.isNaN(Number(updatedRowData.updated.v))) {
@@ -66,6 +69,7 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 					break
 				}
 				action = changeV(updatedRowData.updated.v, i)
+        store.dispatch(removeFit('v'))
 				break
 			case 'w':
 				if(Number.isNaN(Number(updatedRowData.updated.w))) {
@@ -73,6 +77,7 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 						break
 					}
 				action = changeW(updatedRowData.updated.w, i)
+        store.dispatch(removeFit('w'))
 				break
 			case 'eta':
 				if(Number.isNaN(Number(updatedRowData.updated.eta))) {
@@ -80,6 +85,7 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 					break
 				}
 				action = changeEta(updatedRowData.updated.eta, i)
+        store.dispatch(removeFit('eta'))
 				break
 			case 'zero':
 				if(Number.isNaN(Number(updatedRowData.updated.zero))) {
@@ -87,6 +93,7 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 					break
 				}
 				action = changeZero(updatedRowData.updated.zero, i)
+        store.dispatch(removeFit('zero'))
 				break
 			case 'tmin':
 				if(Number.isNaN(Number(updatedRowData.updated.tmin))) {

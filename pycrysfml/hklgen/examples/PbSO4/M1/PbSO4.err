@@ -2,70 +2,48 @@
   .O1
     .O1 B = Parameter(0.5, name='O1 B')
     .O1 occ = Parameter(1, name='O1 occ')
-    .O1 x = Parameter(0.90855, name='O1 x', bounds=(0,1))
+    .O1 x = Parameter(0.908609, name='O1 x', bounds=(0,1))
     .O1 y = Parameter(0.25, name='O1 y')
-    .O1 z = Parameter(0.595886, name='O1 z', bounds=(0,1))
+    .O1 z = Parameter(0.595654, name='O1 z', bounds=(0,1))
   .O2
     .O2 B = Parameter(0.5, name='O2 B')
     .O2 occ = Parameter(1, name='O2 occ')
-    .O2 x = Parameter(0.192788, name='O2 x', bounds=(0,1))
+    .O2 x = Parameter(0.193114, name='O2 x', bounds=(0,1))
     .O2 y = Parameter(0.25, name='O2 y')
-    .O2 z = Parameter(0.543243, name='O2 z', bounds=(0,1))
+    .O2 z = Parameter(0.54283, name='O2 z', bounds=(0,1))
   .O3
     .O3 B = Parameter(0.5, name='O3 B')
     .O3 occ = Parameter(1, name='O3 occ')
-    .O3 x = Parameter(0.0806865, name='O3 x', bounds=(0,1))
+    .O3 x = Parameter(0.0807255, name='O3 x', bounds=(0,1))
     .O3 y = Parameter(0.02709, name='O3 y')
-    .O3 z = Parameter(0.808722, name='O3 z', bounds=(0,1))
+    .O3 z = Parameter(0.808413, name='O3 z', bounds=(0,1))
   .Pb
-    .Pb B = Parameter(0.499555, name='Pb B', bounds=(0,10))
+    .Pb B = Parameter(0.499718, name='Pb B', bounds=(0,10))
     .Pb occ = Parameter(1, name='Pb occ')
-    .Pb x = Parameter(0.187941, name='Pb x', bounds=(0,1))
+    .Pb x = Parameter(0.187889, name='Pb x', bounds=(0,1))
     .Pb y = Parameter(0.25, name='Pb y')
-    .Pb z = Parameter(0.167247, name='Pb z', bounds=(0,1))
+    .Pb z = Parameter(0.167205, name='Pb z', bounds=(0,1))
   .S
     .S B = Parameter(0.5, name='S B')
     .S occ = Parameter(1, name='S occ')
-    .S x = Parameter(0.0644845, name='S x', bounds=(0,1))
+    .S x = Parameter(0.064563, name='S x', bounds=(0,1))
     .S y = Parameter(0.25, name='S y')
-    .S z = Parameter(0.685015, name='S z', bounds=(0,1))
-.base = Parameter(175.896, name='base', bounds=(-400,700))
+    .S z = Parameter(0.68494, name='S z', bounds=(0,1))
+.base = Parameter(176.001, name='base', bounds=(-400,700))
 .cell
-  .a = Parameter(8.48133, name='a', bounds=(3,14))
-  .b = Parameter(5.39688, name='b', bounds=(0,11))
-  .c = Parameter(6.95826, name='c', bounds=(1,12))
-.eta = Parameter(1.26967e-05, name='eta', bounds=(0,1))
-.scale = Parameter(1.02987, name='scale', bounds=(0,100))
-.u = Parameter(1.62089e-05, name='u', bounds=(0,1))
-.v = Parameter(-1.42958e-05, name='v', bounds=(-1,0))
-.w = Parameter(0.999992, name='w', bounds=(0,1))
-.zero = Parameter(-0.0946172, name='zero', bounds=(-0.6,0.5))
+  .a = Parameter(8.47897, name='a', bounds=(3,14))
+  .b = Parameter(5.39628, name='b', bounds=(0,11))
+  .c = Parameter(6.95848, name='c', bounds=(1,12))
+.eta = Parameter(5.21778e-06, name='eta', bounds=(0,1))
+.scale = Parameter(1.00205, name='scale', bounds=(0,100))
+.u = Parameter(1.7497e-05, name='u', bounds=(0,1))
+.v = Parameter(-9.35398e-06, name='v', bounds=(-1,0))
+.w = Parameter(0.999985, name='w', bounds=(0,1))
+.zero = Parameter(-0.0945845, name='zero', bounds=(-0.6,0.5))
 
-[chisq=23.1795(81), nllf=66965.7]
-intensity from plot is  [ 175.89630358  175.89630358  175.89630358 ...,  205.37942947  205.19966049
-  205.00484693]
+[chisq=24.0569(81), nllf=69500.4]
+intensity from plot is  [ 176.00051402  176.00051402  176.00051402 ...,  204.44188955  204.33989744
+  204.22261944]
 2910 14545
 /usr/lib/python2.7/dist-packages/matplotlib/axes/_axes.py:2790: MatplotlibDeprecationWarning: Use of None object as fmt keyword argument to suppress plotting of data values is deprecated since 1.4; use the string "none" instead.
   warnings.warn(msg, mplDeprecation, stacklevel=1)
-              Parameter       mean  median    best [   68% interval] [   95% interval]
- 1                 O1 x 0.908668(63) 0.908670 0.908550 [0.90866 0.90868] [0.90856 0.90877]
- 2                 O1 z 0.595651(39) 0.595650 0.595886 [0.59564 0.59566] [0.59559 0.59572]
- 3                 O2 x 0.193076(42) 0.193080 0.192788 [0.19307 0.19308] [0.19299 0.19312]
- 4                 O2 z 0.542865(32) 0.5428604 0.5432432 [0.542857 0.542874] [0.542833 0.542931]
- 5                 O3 x 0.080733(39) 0.0807301 0.0806865 [0.080726 0.080736] [0.080690 0.080786]
- 6                 O3 z 0.808416(83) 0.808410 0.808722 [0.80840 0.80842] [0.80833 0.80853]
- 7                 Pb B 0.49994(42) 0.499995 0.499555 [0.49988 0.50004] [0.49933 0.50027]
- 8                 Pb x 0.187888(23) 0.1878899 0.1879407 [0.187883 0.187894] [0.187845 0.187922]
- 9                 Pb z 0.167198(57) 0.167200 0.167247 [0.16719 0.16721] [0.16714 0.16725]
-10                  S x 0.064551(43) 0.064550 0.064485 [0.06454 0.06456] [0.06447 0.06461]
-11                  S z 0.684983(48) 0.684980 0.685015 [0.68497 0.68499] [0.68491 0.68506]
-12                 base 176.001(15) 176.0001 175.8963 [175.996 176.005] [175.973 176.029]
-13                    a 8.47843(42) 8.47837 8.48133 [ 8.4783  8.4786] [ 8.4780  8.4793]
-14                    b 5.39677(40) 5.39668 5.39688 [ 5.3967  5.3969] [ 5.3964  5.3977]
-15                    c 6.95810(47) 6.95799 6.95826 [ 6.9580  6.9582] [ 6.9576  6.9590]
-16                  eta 0.007(21)e-3 0.0000013 0.0000127 [0.000000 0.000010] [0.000000 0.000044]
-17                scale 1.0009(27) 1.00010 1.02987 [ 0.9999  1.0013] [ 0.9994  1.0085]
-18                    u 0.004(11)e-3 0.0000010 0.0000162 [0.000000 0.000006] [0.000000 0.000026]
-19                    v -2.3(43)e-6 -0.0000009 -0.0000143 [-0.000004 -0.000000] [-0.000013 -0.000000]
-20                    w 0.999995(12) 0.9999980 0.9999918 [0.999991 1.000000] [0.999975 1.000000]
-21                 zero -0.094599(54) -0.094591 -0.094617 [-0.09460 -0.09459] [-0.09471 -0.09456]

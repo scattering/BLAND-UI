@@ -19,7 +19,7 @@ var sending1 = function(f, xhr, formData) {
       console.log('Success');
       var json2 = JSON.parse(xhr.responseText)
       console.log(json2)
-      spaceGroup = space[json2[0] - 1]
+      spaceGroup = space[json2[0]]
       a = json2[1][0]
       b = json2[1][1]
       c = json2[1][2]
@@ -27,6 +27,12 @@ var sending1 = function(f, xhr, formData) {
       beta = json2[2][1]
       gamma = json2[2][2]
       store.dispatch(changeCell(spaceGroup, a, b, c, alpha, beta, gamma, tab))
+      store.dispatch(removeFit('a' + (tab + 1)))
+      store.dispatch(removeFit('b' + (tab + 1)))
+      store.dispatch(removeFit('c' + (tab + 1)))
+      store.dispatch(removeFit('alpha' + (tab + 1)))
+      store.dispatch(removeFit('beta' + (tab + 1)))
+      store.dispatch(removeFit('gamma' + (tab + 1)))
       select = tab;
       state = store.getState()
       console.log(state['myReducer4']['Phases'][tab][0].length)
@@ -53,7 +59,7 @@ var sending1 = function(f, xhr, formData) {
           label = atm[0]
           element = atm[1]
           atomNum = atm[5]
-          atom = atoms[atomNum - 1]
+          atom = atoms[atomNum]
           //valence = valences[0]
           //isotope = isotopes[0]
           position = atm[2]
@@ -64,8 +70,14 @@ var sending1 = function(f, xhr, formData) {
           thermal = atm[4]
           //console.log('changing row')
           store.dispatch(changeWholeRow(label, atom, x, y, z, occupancy, thermal, i - 3, tab))
+          store.dispatch(removeFit('row' + (i - 3) + 'x' + (tab + 1)))
+          store.dispatch(removeFit('row' + (i - 3) + 'y' + (tab + 1)))
+          store.dispatch(removeFit('row' + (i - 3) + 'z' + (tab + 1)))
+          store.dispatch(removeFit('row' + (i - 3) + 'occupancy' + (tab + 1)))
+          store.dispatch(removeFit('row' + (i - 3) + 'thermal' + (tab + 1)))
           //console.log('finished row')
       }
+      console.log(store.getState())
     }
     else {
       console.log('Whoops');
@@ -81,13 +93,29 @@ var successCallBack1 = function(f, response) {
 var removeCallBack1 = function(f) {
   console.log('Removed');
   //tab = store.getState()['myReducer4']['Selected']
+  select = store.getState()['myReducer4']['Selected']
+  console.log(select)
   store.dispatch(changeCell('','','','','','','', select));
+  store.dispatch(removeFit('a' + (select + 1)))
+  store.dispatch(removeFit('b' + (select + 1)))
+  store.dispatch(removeFit('c' + (select + 1)))
+  store.dispatch(removeFit('alpha' + (select + 1)))
+  store.dispatch(removeFit('beta' + (select + 1)))
+  store.dispatch(removeFit('gamma' + (select + 1)))
+
   rows = store.getState()['myReducer4']['Phases'][select][0];
   for (var i = 0; i < rows.length; i++) {
     if(rows[i]['label'] !== '') {
-      store.dispatch(changeWholeRow('','','','','','','','','', i, select))
+      console.log(i, select)
+      store.dispatch(changeWholeRow('','','','','','','', i, select))
+      store.dispatch(removeFit('row' + i + 'x' + (select + 1)))
+      store.dispatch(removeFit('row' + i + 'y' + (select + 1)))
+      store.dispatch(removeFit('row' + i + 'z' + (select + 1)))
+      store.dispatch(removeFit('row' + i + 'occupancy' + (select + 1)))
+      store.dispatch(removeFit('row' + i + 'thermal' + (select + 1)))
     }
   }
+  console.log(store.getState())
 }
 
 var filesExceeded1 = function(f) {
@@ -165,22 +193,35 @@ var sending2 = function(f, xhr, formData) {
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4 && xhr.status == 200) {
         console.log("All groovy data");
-        const json2 = JSON.parse(xhr.responseText);
-        //data = []
-        for(i = 0; i < json2[0].length; i++) {
-          data.push([json2[0][i], (json2[1][i] - 219), {"yupper": (json2[1][i]+json2[2][i] - 219), "xupper": json2[0][i], "ylower": (json2[1][i]-json2[2][i] - 219), "xlower": json2[0][i]}])
+        //console.log(xhr.responseText)
+        if(xhr.responseText === 'Sorry, this didn\'t work') {
+          alert('Sorry, the upload was unsuccessful. Please submit a different data file.')
         }
-        data = [[data]]
-        observed = true
-        //console.log(data)
-        console.log(json2);
-        tt = json2[0];
-        tMin = tt[0];
-        tMax = tt[tt.length - 1];
-        console.log('min '+tMin+' max '+tMax);
-        tab = store.getState()['myReducer4']['Selected']
-        store.dispatch(changeTMin(tMin, 0, tab));
-        store.dispatch(changeTMax(tMax, 0, tab));
+        else {
+          const json2 = JSON.parse(xhr.responseText);
+          //data = []
+          if(json2[0].length === 0 || json2[1].length === 0 || json2[2].length === 0) {
+            alert('Sorry, the upload was unsuccessful. Please submit a different data file.')
+          }
+          else {
+            for(i = 0; i < json2[0].length; i++) {
+              data.push([json2[0][i], (json2[1][i] - 219), {"yupper": (json2[1][i]+json2[2][i] - 219), "xupper": json2[0][i], "ylower": (json2[1][i]-json2[2][i] - 219), "xlower": json2[0][i]}])
+            }
+            obs = json2[1];
+            tt1 = json2[0];
+            data = [[data]]
+            observed = true
+            //console.log(data)
+            //console.log(json2);
+            tt = json2[0];
+            tMin = tt[0];
+            tMax = tt[tt.length - 1];
+            console.log('min '+tMin+' max '+tMax);
+            tab = store.getState()['myReducer4']['Selected']
+            store.dispatch(changeTMin(tMin, 0, tab));
+            store.dispatch(changeTMax(tMax, 0, tab));
+          }
+        }
     }
     else {
       console.log("Status is " + xhr.status)

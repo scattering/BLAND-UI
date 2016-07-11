@@ -60,6 +60,7 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
 					break
 				}
 				action = changeX(updatedRowData.updated.x, i, tab)
+        store.dispatch(removeFit('row' + i + 'x' + (tab + 1)))
 				break
 			case 'y':
 				if(Number.isNaN(Number(updatedRowData.updated.y))) {
@@ -71,6 +72,7 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
 					break
 				}
 				action = changeY(updatedRowData.updated.y, i, tab)
+        store.dispatch(removeFit('row' + i + 'y' + (tab + 1)))
 				break
 			case 'z':
 				if(Number.isNaN(Number(updatedRowData.updated.z))) {
@@ -82,6 +84,7 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
 					break
 				}
 				action = changeZ(updatedRowData.updated.z, i, tab)
+        store.dispatch(removeFit('row' + i + 'z' + (tab + 1)))
 				break
 			case 'occupancy':
 				if(Number.isNaN(Number(updatedRowData.updated.occupancy))) {
@@ -93,6 +96,7 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
 					break
 				}
 				action = changeOccupancy(updatedRowData.updated.occupancy, i, tab)
+        store.dispatch(removeFit('row' + i + 'occupancy' + (tab + 1)))
 				break
 			case 'thermal':
         if(Number.isNaN(Number(updatedRowData.updated.thermal))) {
@@ -100,6 +104,7 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
           break
         }
 				action = changeB(updatedRowData.updated.thermal, i, tab)
+        store.dispatch(removeFit('row' + i + 'thermal' + (tab + 1)))
 				break
 			default:
 				action = doNothing()
