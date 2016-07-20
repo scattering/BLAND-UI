@@ -130,6 +130,7 @@ var MainLayout1 = React.createClass ({
 	handleClick1: function(e) {
 		if(document.getElementById('mybtn').style.visibility === "visible") {
 			document.getElementById('mybtn').style.visibility = "hidden";
+			//document.getElementById('fitbtn').style.visibility = "hidden";
 		}
 	},
 
@@ -176,12 +177,6 @@ var MainLayout1 = React.createClass ({
 								"Models"
 							)
 						),
-						/*React.createElement(NavItem, {eventKey: 3},
-							React.createElement(Link,
-								{ to: "/bland/cell/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
-								"Unit Cell"
-							)
-						),*/
 						React.createElement(NavItem, {eventKey: 4},
 							React.createElement(Link,
 								{ to: "/bland/fit/", style: {'color': '#428bca'}, activeStyle: {'color': 'blue'} },
@@ -223,8 +218,6 @@ ReactDOM.render(React.createElement(
 	{ path: "/bland/", component: MainLayout1 },
 	React.createElement(IndexRoute, { component: Help }),
 	React.createElement(Route, { path: "/bland/instrument/", component: Instrument }),
-	//React.createElement(Route, { path: "/bland/cell/", component: Cell }),
-	//React.createElement(Route, { path: "/bland/grid/", component: Grid }),
 	React.createElement(Route, { path: "/bland/models/", component: Models }),
 	React.createElement(Route, {path: "/bland/fit/", component: Fit }),
 	React.createElement(Route, {path: "/bland/results/", component: Results })

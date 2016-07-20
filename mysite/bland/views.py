@@ -4,20 +4,27 @@ from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.crypto import salted_hmac
+from wsgiref.util import FileWrapper
 import json
 import demjson
-import sys
+import sys, os
 sys.path.append("/mnt/hgfs/Ubuntu_Shared/pycrysfml/hklgen")
 from decimal import *
 import periodictable
 import fswig_hklgen as H
 import hkl_model as Mod
-from bumps.fitters import FitDriver, DreamFit
+import StringIO
+import zipfile, tarfile
+from PIL import Image
+from bumps.fitters import FitDriver, DreamFit, StepMonitor
 from bumps.mapper import SerialMapper
-from bumps.fitproblem import FitProblem
+from bumps.fitproblem import FitProblem, nllf_scale
 from bumps.options import BumpsOpts
+from bumps import monitor
+from bumps.history import History
+import bumps.util
 from bumps.cli import setup_logging, make_store, store_overwrite_query, save_best, beep
-#from .calculations.vtkModel.AtomClass import Atom as myAtom
 from .calculations.vtkModel.CellClass import Cell
 from .calculations.vtkModel.SpaceGroups import *
 from .models import Question, Choice, Atom
@@ -25,7 +32,57 @@ from .read_cif import *
 import numpy as np
 from django.template import RequestContext
 import hashlib
+#from multiprocessing import Process, Pipe
+import threading
+import threading
+import datetime, time
+from django.conf import settings
+from django.core.cache import cache
+#settings.configure()
+import inspect
 
+class IndexView(generic.ListView):
+    template_name = 'bland/index.html'
+    
+    def get_queryset(self):
+	pass
+
+def status(request, token):
+    context = {'token': token}
+    return render(request, 'bland/status.html', context)
+
+class CustomMonitor(monitor.Monitor):
+    FIELDS = ['step', 'time', 'value', 'point']
+    
+    def __init__(self, problem, key, fields=FIELDS):
+        if any(f not in self.FIELDS for f in fields):
+            raise ValueError("invalid monitor field")
+        self.fields = fields
+        self.problem = problem
+	self.key = key
+        self._pattern = "%%(%s)s\n" % (")s %(".join(fields))
+        
+    def config_history(self, history):
+        history.requires(time=1, value=1, point=1, step=1)
+    
+    def __call__(self, history):
+	print datetime.datetime.now()
+	print self.problem.summarize()
+	print datetime.datetime.now()
+        point = " ".join("%.15g" % v for v in history.point[0])
+        time = "%g" % history.time[0]
+        step = "%d" % history.step[0]
+        scale, _ = nllf_scale(self.problem)
+        value = "%.15g" % (scale * history.value[0])
+        out = self._pattern % dict(point=point, time=time,
+                                    value=value, step=step)
+        print("p is", self.problem.getp())
+        fp = open('/tmp/bland/store_' + self.key + '/out.txt', 'w')
+        fp.write("# " + ' '.join(self.fields) + '\n')
+        fp.write(out)
+	fp.write(self.problem.summarize())
+	#fp.write(str(self.problem.getp()))
+        fp.close()    
 
 class Opts:
     def __init__(self, fit, store, args):
@@ -47,75 +104,21 @@ class Opts:
     @property
     def batch(self):
         return None
-
-class IndexView(generic.ListView):
-    template_name = 'bland/index.html'
-    context_object_name = 'latest_question_list'
-    
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
-    
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'bland/detail.html'
-    
-    def get_queryset(self):
-        """Excludes any questions that aren't published yet."""
-        return Question.objects.filter(pub_date__lte=timezone.now())
-    
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'bland/results.html'
-    
-"""
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    context = {'latest_question_list': latest_question_list}
-    return render(request, 'bland/index.html', context)
-
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'bland/detail.html', {'question': question})
-
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'bland/results.html', {'question': question})
-"""
-
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question votin form.
-        return render(request, 'bland/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a 
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('bland:results', args=(question.id,)))
     
 @csrf_exempt
 def calc(request):
     x = demjson.decode(request.body)
-    #x = json.loads(string1)
     print x
     print
     
     fits = x['myReducer5'][0]
     instrument = x['myReducer3'][0]
-    tt_ = x['tt']
-    obs_ = x['obs']
-    tt_mod = [float(s) for s in tt_]
-    obs_mod = [float(l) for l in obs_]
-    map(float, tt_mod)
-    map(float, obs_mod)
+    if 'tt' in request.session:
+	tt_ = request.session['tt']
+	tt_mod = [float(s) for s in tt_]
+    if 'obs' in request.session:
+	obs_ = request.session['obs']
+	obs_mod = [float(l) for l in obs_]
     uvw = [float(instrument['u']), float(instrument['v']), float(instrument['w'])]
     F = 0.0
     tMin = float(instrument['tmin'])
@@ -168,10 +171,6 @@ def calc(request):
 		    symbol = str(name.split(' ')[4])
 		    mult = real_sgs[i].multip
 		    print "mult is", mult
-		    #print "multiplicity is", mult
-		    #print type(symbol),x,y,z, type(label)
-		    #my_cell.generateAtoms(symbol, (x,y,z))
-		    #atmLst = my_cell.getAtoms()
 		    atom = H.Atom(label, symbol, [x,y,z], mult, occ, 0.5)
 		    atmLsts[i].append(atom)
 	atomLists[i] = H.AtomList(atmLsts[i])
@@ -181,16 +180,13 @@ def calc(request):
 	for j in range(len(tts[i])):
 	    sfs[i].append(np.sqrt(structFacts[i][j]))
 	    temp1 = tts[i][j]
-	    #temp2 = intensities[i][j]
 	    tts[i][j] = float(temp1)
-	    #intensities[i][j] = float(temp2)
 	for j in range(len(tt1s[i])):
 	    temp = intensities[i][j]
 	    intensities[i][j] = float(temp)
 	    temp1 = tt1s[i][j]
 	    tt1s[i][j] = float(temp1)
 	ints[i] = intensities[i].tolist()
-	#twothetas[i] = tts[i].tolist()
 	twothetas1[i] = tt1s[i].tolist()
 	print "ints is"
 	print ints
@@ -198,69 +194,9 @@ def calc(request):
 	for k in range(len(hkls[i][0])):
 	    hkl_rets[i].append([int(hkls[i][0][k]), int(hkls[i][1][k]), int(hkls[i][2][k])])	
     print cells
-    #space = cell['space']
     print spaces
-    #space_num = int(space.split(' ')[2])
     print "Space group number is", space_nums
     print
-    #my_group = GetSpaceGroup(space_num)
-    #print GetSpaceGroup(62).alt_name
-    #print my_group.short_name
-    #real_sg = H.SpaceGroup(my_group.alt_name)
-    #print(real_sg.number)
-    #abc = [float(cell['a']), float(cell['b']), float(cell['c'])]
-    #albega = [float(cell['alpha']), float(cell['beta']), float(cell['gamma'])]
-    #print abc, albega
-    #my_cell = H.CrystalCell(abc, albega)
-    
-    #print wavelength
-    """atoms = x['myReducer']
-    atmLst = []
-    for item in atoms:
-	if(item['label'] != ''):
-		x = float(item['x'])
-		y = float(item['y'])
-		z = float(item['z'])
-		name = item['atom']
-		label = str(item['label'])
-		occ = float(item['occupancy'])
-		symbol = str(name.split(' ')[4])
-		mult = real_sg.multip
-		print "mult is", mult
-		#print "multiplicity is", mult
-		#print type(symbol),x,y,z, type(label)
-		#my_cell.generateAtoms(symbol, (x,y,z))
-		#atmLst = my_cell.getAtoms()
-		atom = H.Atom(label, symbol, [x,y,z], mult, occ, 0.5)
-		atmLst.append(atom)
-    #print atmLst
-    atomList = H.AtomList(atmLst)
-    tt, intensity, hkl = H.diffPattern(wavelength=wavelength, cell=my_cell, uvw=uvw, ttMin=tMin, ttMax=tMax, spaceGroup=real_sg, atomList=atomList, info=True)
-    structFact = H.structWrap(tMin, tMax, wavelength, real_sg, my_cell, atomList)"""
-    #print "There are %d reflections" % len(tt)
-    """sf = []
-    for i in range(len(tt)):
-	sf.append(np.sqrt(structFact[i]))
-	temp1 = tt[i]
-	temp2 = intensity[i]
-	tt[i] = float(temp1)
-	intensity[i] = float(temp2)
-	#print "2T:", tt[i], "\tIntensity:", intensity[i], "\tStruct factor is:", sf[i], "\tHKL:", hkl[0][i], hkl[1][i], hkl[2][i]
-   # print type(tt[0]), type(hkl[0][i]), type(intensity)
-    print "intensity from views is ", intensity
-    ints = intensity.tolist()"""
-    #print type(ints)
-    #print "2 theta is",tt, "Intensity is", intensity
-   # for key, value in my_cell.atoms.items():                   
-          #  d=value.getPosition()
-         #   print d
-          #  sym=value.getElementSymbol()
-	  #  print sym
-    #print instrument
-    inst = json.dumps(instrument)
-    """hkl_ret = []
-    for i in range(len(hkl[0])):
-	hkl_ret.append([int(hkl[0][i]), int(hkl[1][i]), int(hkl[2][i])])"""
     print len(hkl_rets[0]), len(tt1s[0]), len(sfs[0]), len(twothetas1[0]), len(ints[0])
     ret = json.dumps([hkl_rets[0], tts[0], sfs[0], twothetas1[0], ints[0]])
     context = RequestContext(request)
@@ -268,62 +204,109 @@ def calc(request):
     print len(fits)
     print fits
     phases = {}
+    print type(obs_mod[0]), type(tt_mod[0])
+    return HttpResponse(ret)
+
+
+@csrf_exempt
+def fitting(request):
+    x = demjson.decode(request.body)
+    if 'tt' in request.session:
+	tt_ = request.session['tt']
+	tt_mod = [float(s) for s in tt_]
+    if 'obs' in request.session:
+	obs_ = request.session['obs']
+	obs_mod = [float(l) for l in obs_]   
+    state = str(x['myReducer4'])
+    fits = x['myReducer5'][0]
+    instrument = x['myReducer3'][0]
+    phases = {}
+    
+    if 'my_cells' in request.session and 'real_sgs' in request.session and 'atomLists' in request.session:
+	my_cells = request.session['my_cells']
+	real_sgs = request.session['real_sgs']
+	atomLists = request.session['atomLists']
+    else:
+	spaces = {}
+	cells = {}
+	space_nums = {}
+	my_groups = {}
+	atoms = {}
+	atmLsts = {}
+	my_cells = {}
+	abcs = {}
+	albegas = {}
+	real_sgs = {}
+	atomLists = {}
+	for i in range(len(x['myReducer4']['Phases'])):
+	    value = x['myReducer4']['Phases'][i][1][0]
+	    print "value is "
+	    print value
+	    spaces[i] = value['space']
+	    cells[i] = value
+	    space_nums[i] = int(spaces[i].split(' ')[2])
+	    my_groups[i] = GetSpaceGroup(space_nums[i])
+	    real_sgs[i] = H.SpaceGroup(my_groups[i].alt_name)
+	    abcs[i] = [float(cells[i]['a']), float(cells[i]['b']), float(cells[i]['c'])]
+	    albegas[i] = [float(cells[i]['alpha']), float(cells[i]['beta']), float(cells[i]['gamma'])]
+	    my_cells[i] = H.CrystalCell(abcs[i], albegas[i])
+	    atoms[i] = x['myReducer4']['Phases'][i][0]
+	    atmLsts[i] = []
+	    for item in atoms[i]:
+		if(item['label'] != ''):
+			x = float(item['x'])
+			y = float(item['y'])
+			z = float(item['z'])
+			name = item['atom']
+			label = str(item['label'])
+			occ = float(item['occupancy'])
+			symbol = str(name.split(' ')[4])
+			mult = real_sgs[i].multip
+			print "mult is", mult
+			atom = H.Atom(label, symbol, [x,y,z], mult, occ, 0.5)
+			atmLsts[i].append(atom)
+	    atomLists[i] = H.AtomList(atmLsts[i])	
+    print "hello"
     if len(fits) != 0:
 	print "time to fit"
 	for item in fits:
-	    #print item
-	    #print fits[item]
-	    try:
-		phase_num = int(fits[item]['phase'])
-	    except: 
-		phase_num = 'all'
-	    if phase_num not in phases:
-		phases[phase_num] = {}
-	    els = fits[item].keys()
-	    #print "els is", els
-	    if str(fits[item]['row']) != '':
-		if str(fits[item]['name']) not in phases[phase_num]:
-		    phases[phase_num][str(fits[item]['name'])] = [{}]
-		    num = 0
-		else:
-		    phases[phase_num][str(fits[item]['name'])].append({})
-		    num = len(phases[phase_num][str(fits[item]['name'])]) - 1
-	    else:
-		phases[phase_num][str(fits[item]['name'])] = {}
-	    #print "Phase is currently", phases[phase_num]	    
-	    for el in els:
-		#phases[phase_num].append(dict(item, dict(el, fits[item][el])))
-		if str(fits[item]['row']) != '':
-		    phases[phase_num][str(fits[item]['name'])][num][str(el)] = str(fits[item][el])
-		else:
-		    phases[phase_num][str(fits[item]['name'])][str(el)] = str(fits[item][el])
-		
-	    """if "gamma" in item:
-		phase = int(item[5])
-		pm = float(fits[item][0])
-	    if "beta" in item:
-		phase = int(item[4])
-		pm = float(fits[item][0])
-	    if "alpha" in item:
-		phase = int(item[5])
-		pm = float(fits[item][0])
-	    if "a" in item and "alpha" not in item and "gamma" not in item and "beta" not in item:
-		phase = int(item[1])
-		pm = float(fits[item][0])
-	    if "b" in item and "beta" not in item:
-		phase = int(item[1])
-		pm = float(fits[item][0])
-	    if "c" in item:
-		phase = int(item[1])
-		pm = float(fits[item][0])
-	    cell = my_cells[phase - 1]
-	    cell_hkl = Mod.makeCell(cell, real_sgs[phase - 1].xtalSystem)"""
-    
-
+	    print item
+	    print fits[item]
+	    if item != 'steps':
+		if fits[item]:
+		    try:
+			phase_num = int(fits[item]['phase'])
+		    except: 
+			phase_num = 'all'
+		    if phase_num not in phases:
+			phases[phase_num] = {}
+		    els = fits[item].keys()
+		    if str(fits[item]['row']) != '':
+			if str(fits[item]['name']) not in phases[phase_num]:
+			    phases[phase_num][str(fits[item]['name'])] = [{}]
+			    num = 0
+			else:
+			    phases[phase_num][str(fits[item]['name'])].append({})
+			    num = len(phases[phase_num][str(fits[item]['name'])]) - 1
+		    else:
+			phases[phase_num][str(fits[item]['name'])] = {}
+		    for el in els:
+			if str(fits[item]['row']) != '':
+			    phases[phase_num][str(fits[item]['name'])][num][str(el)] = str(fits[item][el])
+			else:
+			    phases[phase_num][str(fits[item]['name'])][str(el)] = str(fits[item][el])
+			    
 	backg = H.LinSpline(None)
-	u = uvw[0]
-	v = uvw[1]
-	w = uvw[2]
+	u = float(instrument['u'])
+	v = float(instrument['v'])
+	w = float(instrument['w'])
+	wavelength = float(instrument['wavelength'])
+	try:
+	    steps = 'steps = ' + str(fits['steps'])
+	    num_steps = int(fits['steps'])
+	except:
+	    steps = 'steps = 5'
+	    num_steps = 5
 	try:
 	    u_pm = float(phases['all']['u']['pm'])
 	except:
@@ -346,12 +329,12 @@ def calc(request):
 	    pass
 	try:
 	    scale_pm = float(phases['all']['scale']['pm'])
+	    print scale_pm
 	except:
 	    pass
 	for inst in phases:
 	    print "Phase", inst
 	    print phases[inst]
-	    #if inst != 'all':
 	cell = my_cells[0]
 	print real_sgs[0].xtalSystem, real_sgs[0].number
 	cell_hkl = Mod.makeCell(cell, real_sgs[0].xtalSystem)
@@ -407,7 +390,6 @@ def calc(request):
 	print "length is ", len(m.atomListModel.atomModels)
 	for i in range(len(m.atomListModel.atomModels)):
 	    print m.atomListModel.atomModels[i].atom.label()
-	    print atomLists[0][i].label()
 	    try:
 		for item in phases[1]['x']:
 		    if int(item['row']) == i:
@@ -458,30 +440,92 @@ def calc(request):
 		m.atomListModel.atomModels[i].B.pm(therm_pm)
 	    except:
 		pass
-	    
-	M = FitProblem(m)
-	opts = Opts(DreamFit, '/tmp/bland/M1', ['burn=0', 'steps=5'])
+		
+	print steps
+	
+	key = hashlib.sha1(str(datetime.datetime.now())).hexdigest()[:5]
+	if not os.path.exists('/tmp/bland/store_' + key):
+		os.makedirs('/tmp/bland/store_' + key)    	
+	fp = open('/tmp/bland/store_' + key + '/out.txt', 'w')
+	fp.write('Starting...')
+	fp.close()
+	thread = threading.Thread(target=fitter, args=(m, steps, num_steps, key,))
+	thread.start()
+	"""M = FitProblem(m)
+	key = hashlib.sha1(datetime.datetime.now()).hexdigest()[:5]
+	opts = Opts(DreamFit, '/tmp/bland/store_' + key, ['burn=0', steps])
 	setup_logging()
 	problem = M
 	problem.path = '/mnt/hgfs/Ubuntu_Shared/mysite/bland/views.py'
 	mapper = SerialMapper
-	extra_opts = {'burn': 0, 'pop': 10, 'init': 'eps', 'steps': 5, 'thin': 1, 'samples': 10000}
+	#fp = open('/tmp/bland/out.txt', 'w')
+	monitor = CustomMonitor(problem, key)
+	#monitor = StepMonitor(problem, fp)
+	extra_opts = {'burn': 0, 'pop': 1, 'init': 'eps', 'steps': num_steps, 'thin': 1, 'samples': 10000}
 	fitdriver = FitDriver(
-		DreamFit, problem=problem, abort_test=lambda: False,
-		**extra_opts)	
+	    DreamFit, problem=problem, monitors=[monitor], abort_test=lambda: False,
+	    **extra_opts)	
 	make_store(problem, opts, exists_handler=store_overwrite_query)
 	resume_path = None
+	
 	fitdriver.mapper = mapper.start_mapper(problem, opts.args)
+	
 	best, fbest = fitdriver.fit(resume=resume_path)
+	
 	save_best(fitdriver, problem, best)
-	mapper.stop_mapper(fitdriver.mapper)	    
+	
+	#mapper.stop_mapper(fitdriver.mapper)	  
+	
 	beep()
-	import pylab
-	pylab.show()
-	M.model_update()	
-	return HttpResponse("Fitting")
-    print type(obs_mod[0]), type(tt_mod[0])
-    return HttpResponse(ret)
+	#import pylab
+	#pylab.show()
+	M.model_update()
+	#fp.close()
+	print M.getp()
+	print M.show()
+	print M.summarize()
+	files = []
+	for fil in os.listdir("/tmp/bland/store_" + key):
+	    if fil.endswith('.png'):
+		files.append("/tmp/bland/store_" + key + "/" + fil)
+	print files
+	zip_subdir = "images"
+	zip_filename = "%s.zip" % zip_subdir
+	s = StringIO.StringIO()
+	zf = zipfile.ZipFile(s, "w")
+	#output = tarfile.open('images.tar.gz', mode='w')
+	for fpath in files:
+	    fdir, fname = os.path.split(fpath)
+	    zip_path = os.path.join('images', fname)
+	    zf.write(fpath, zip_path)
+	    try:
+		print fpath
+		output.add(fpath)
+	    except Exception, e:
+		print "uh oh, world"
+		#logger.warning("Unable to write to tar")
+		raise OCPCAError("Unable to write to tar")
+		
+	output.list(True)
+	output.close()
+	zf.close()
+	#wrapper = FileWrapper(file('images.zip'))
+	#wrapper = FileWrapper(file('images.tar.gz'))
+	resp = HttpResponse(s.getvalue(), content_type = "application/zip")
+	#resp = HttpResponse(wrapper, content_type = 'application/x-gzip')
+	resp['Content-Length'] = os.path.getsize('images.zip')
+	#resp['Content-Length'] = os.path.getsize('images.tar.gz')
+	resp['Content_Disposition'] = 'attachment; filename="images.zip"'
+	#resp['Content_Disposition'] = 'attachment; filename="images.tar.gz"'"""
+	_key = 'bland.views.fitting'
+	_value = (state + str(datetime.datetime.now()))
+	token = salted_hmac(_key, _value).hexdigest()[:10]
+	cache.set(token, key)
+	cache.persist(token)
+	print "going to status"
+	print token
+	time.sleep(0.4 * len(fits))
+	return HttpResponse(token)    
 
 @csrf_exempt
 def upload(request):
@@ -490,11 +534,8 @@ def upload(request):
     fp = request.FILES['file']
     for line in fp:
 	print line
-	
     handle_uploaded_file(fp)
     spaceGroup, cell, atomList = H.readInfo(os.path.join('/tmp/bland',str(fp.name)))
-    #print spaceGroup.number
-    #print cell.volume
     ret = [spaceGroup.number, cell.lengthList(), cell.angleList()]
     for atom in atomList:
 	for el in periodictable.elements:
@@ -518,39 +559,137 @@ def data(request):
     print type(str(mode))
     print request.FILES['file']
     fp = request.FILES['file']
-    
-    #for line in fp:
-	#print line
-	
     handle_uploaded_file(fp)
     print mode
     go = True
     if mode == 'GSAS':
 	go = False
 	for line in fp:
-	    #print line
 	    if len(line.split()) > 0:
 		if line.split()[0] == 'BANK':
-		    #print len(line.split())
 		    if len(line.split()) == 10:
 			go = True
     elif mode == 'XYSIGMA':
 	go = False
-    #print "tt   observed    error"
     if go == True:
 	(tt, observed, error) = H.readIllData(os.path.join('/tmp/bland',str(fp.name)), str(mode), None)
     else:
 	return HttpResponse('Sorry, this didn\'t work')    
-    #print list(tt), list(observed), list(error)
+    request.session['tt'] = tt
+    request.session['obs'] = observed
     ret = [list(tt), list(observed), list(error)]
     ret = json.dumps(ret)
     print go
     return HttpResponse(ret)
 
 @csrf_exempt
-def route(request):
-    print "hello world"
+def stat(request):
     x = demjson.decode(request.body)
     print x
-    print "ok"
-    return render(request, 'bland/results.html', {'results': x})
+    try:
+	key = cache.get(x)
+	print key
+	fp = open('/tmp/bland/store_' + key + '/out.txt')
+	num = 0
+	for line in fp:
+	    ln = line.split()
+	    if(ln[0] != '#' and ln[0] != 'Starting...' and num != 0 and ln[0] != 'Complete!'):
+		if(num == 1):
+		    out = {'step': ln[0], 'time': ln[1], 'params': [x for x in ln[3:]]}
+		    out['param_list'] = []
+		else:
+		    if(ln[1][0] is not '.'):
+			out['param_list'].append(ln[0] + " - " + ln[1])
+		    else:
+			out['param_list'].append(ln[0])
+	    num += 1
+	if(line == 'Complete!'):
+	    out['complete'] = True
+	else:
+	    out['complete'] = False
+	print out
+	fp.close()
+	ret = json.dumps(out)
+    except:
+	ret = json.dumps('Sorry, the key doesn\'t exist')
+    return HttpResponse(ret)
+
+@csrf_exempt
+def files(request):
+    x = demjson.decode(request.body)
+    print "HELLO WORLD OMG"
+    filez = open('/tmp/out.log', 'w')
+    filez.write(x)
+    filez.close()
+    try:
+	key = cache.get(x)
+	print key
+	files = []
+	for fil in os.listdir("/tmp/bland/store_" + key):
+	    if fil.endswith('.png'):
+		files.append("/tmp/bland/store_" + key + "/" + fil)
+	print files
+	zip_subdir = "images"
+	zip_filename = "%s.zip" % zip_subdir
+	s = StringIO.StringIO()
+	zf = zipfile.ZipFile(s, "w")
+	#output = tarfile.open('images.tar.gz', mode='w')
+	for fpath in files:
+	    fdir, fname = os.path.split(fpath)
+	    zip_path = os.path.join('images', fname)
+	    zf.write(fpath, zip_path)
+	    """try:
+		print fpath
+		output.add(fpath)
+	    except Exception, e:
+		print "uh oh, world"
+		#logger.warning("Unable to write to tar")
+		raise OCPCAError("Unable to write to tar")
+			
+	    output.list(True)
+	    output.close()"""
+	zf.close()
+	#wrapper = FileWrapper(file('images.zip'))
+	#wrapper = FileWrapper(file('images.tar.gz'))
+	resp = HttpResponse(s.getvalue(), content_type = "application/zip")
+	#resp = HttpResponse(wrapper, content_type = 'application/x-gzip')
+	resp['Content-Length'] = os.path.getsize('images.zip')
+	#resp['Content-Length'] = os.path.getsize('images.tar.gz')
+	resp['Content_Disposition'] = 'attachment; filename="images.zip"'
+	#resp['Content_Disposition'] = 'attachment; filename="images.tar.gz"'
+	return HttpResponse(resp)
+    except:
+	return HttpResponse("Sorry, this key doesn't exist.")
+
+def fitter(prob, steps, num_steps, key):
+    M = FitProblem(prob)
+    opts = Opts(DreamFit, '/tmp/bland/store_' + key, ['burn=0', steps])
+    setup_logging()
+    problem = M
+    problem.path = '/mnt/hgfs/Ubuntu_Shared/mysite/bland/views.py'
+    mapper = SerialMapper
+    #fp = open('/tmp/bland/out.txt', 'w')
+    monitor = CustomMonitor(problem, key)
+    #monitor = StepMonitor(problem, fp)
+    extra_opts = {'burn': 0, 'pop': 10, 'init': 'eps', 'steps': num_steps, 'thin': 1, 'samples': 10000}
+    fitdriver = FitDriver(
+	DreamFit, problem=problem, monitors=[monitor], abort_test=lambda: False,
+	**extra_opts)	
+    make_store(problem, opts, exists_handler=store_overwrite_query)
+    resume_path = None
+    
+    fitdriver.mapper = mapper.start_mapper(problem, opts.args)
+    
+    best, fbest = fitdriver.fit(resume=resume_path)
+    
+    save_best(fitdriver, problem, best)
+    
+    #mapper.stop_mapper(fitdriver.mapper)	  
+    
+    beep()
+    #import pylab
+    #pylab.show()
+    M.model_update()
+    with open("/tmp/bland/store_" + key + "/out.txt", 'a') as txt_file:
+	txt_file.write("\nComplete!")
+    return

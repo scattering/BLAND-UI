@@ -4,8 +4,6 @@ var Results = React.createClass({displayName: 'component4',
     $("#plot1").empty();
     $("#plot2").empty();
     console.log(data)
-    //dat = [[data[0][2], data[0][1], data[0][0]]]
-    //console.log(dat)
     if (data[0]) {
       if(observed === true && calculated === true) {
         chart = xyChart({show_line: true, show_errorbars: true, ytransform: 'linear', legend: {show: true}, series: [{"label": "Observed"}, {"label": "Calculated"}], axes: {xaxis: {label: "Two Theta"}, yaxis: {label: "Intensity"}}})
@@ -19,13 +17,7 @@ var Results = React.createClass({displayName: 'component4',
       c = d3.select("#plot1")
         .data(data)
         .call(chart);
-      //console.log("Hello world")
-      /*if(document.getElementById('myCheck').checked === true) {
-        chart.print_plot('my_image.svg')
-      }*/
-      //console.log("plot1 is")
       thing123 = $("#plot1").html();
-      //console.log("this didn't work")
       ReactDOM.render(React.createElement("button", {"id": "myCheck", onClick: this.onSave1}, "Click to save graph"), document.getElementById('place'))
     }
     else {
@@ -43,7 +35,6 @@ var Results = React.createClass({displayName: 'component4',
   },
 
   onSave1: function() {
-    //console.log(typeof chart)
     if(typeof chart !== "undefined") {
       chart.print_plot('plot.svg');
     }
@@ -62,26 +53,25 @@ var Results = React.createClass({displayName: 'component4',
   },
 
   componentDidMount: function() {
-    //console.log('mounting')
-    //console.log(store.getState())
     if(typeof thing123 !== "undefined") {
       console.log("try")
       document.getElementById('plot1').innerHTML = thing123;
-      ReactDOM.render(React.createElement("button", {"id": "myCheck", onClick: this.onSave1}, "Click to save graph"), document.getElementById('place'))
+      ReactDOM.render(React.createElement("button", {"id": "myCheck", className: 'btn', onClick: this.onSave1}, "Click to save graph"), document.getElementById('place'))
     }
     if(typeof thingy !== "undefined") {
       document.getElementById('plot2').innerHTML = thingy;
-      ReactDOM.render(React.createElement("button", {"id": "myCheck2", onClick: this.onSave2}, "Click to save redidual plot"), document.getElementById('place2'))
+      ReactDOM.render(React.createElement("button", {"id": "myCheck2", className: 'btn', onClick: this.onSave2}, "Click to save redidual plot"), document.getElementById('place2'))
     }
   },
 
   render: function() {
     document.getElementById('inner').style.visibility = 'hidden';
 		document.getElementById('below').style.visibility = 'hidden';
+    document.getElementById('mybtn').style.visibility = "visible";
     //console.log(this.props)
     return (
       React.createElement("div", null,
-        React.createElement("button", {id: 'results', onClick: this.onClick},
+        React.createElement("button", {id: 'results', className: 'btn', onClick: this.onClick},
           "Click for results."
         ),
         React.createElement("div", null,
@@ -95,18 +85,3 @@ var Results = React.createClass({displayName: 'component4',
     );
   }
 });
-
-//ReactDOM.render(React.createElement("div", {id: "plot1"}), document)
-/*document.getElementById('results').addEventListener('click', function() {
-  if(data[0]) {
-    chart = xyChart({show_line: true, show_errorbars: true, ytransform: 'linear'})
-    c = d3.select("#plot1")
-      .data([data[0].data])
-      .call(chart);
-    console.log('Plotted');
-  }
-  else {
-    alert('No data to plot!');
-  }
-}, false);
-*/

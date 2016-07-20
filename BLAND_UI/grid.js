@@ -156,6 +156,7 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
 
     handleMount: function() {
 	     document.getElementById('mybtn').style.visibility = "visible";
+       //document.getElementById('fitbtn').style.visibility = "visible";
     },
 
 

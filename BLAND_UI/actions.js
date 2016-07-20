@@ -155,6 +155,7 @@ function changeTab(index) {
 const ADD_FIT = 'ADD_FIT'
 const REMOVE_FIT = 'REMOVE_FIT'
 const CHANGE_PM = 'CHANGE_PM'
+const CHANGE_STEPS = 'CHANGE_STEPS'
 
 function addFit(name, value) {
 	return {type: ADD_FIT, name}
@@ -164,4 +165,7 @@ function removeFit(name) {
 }
 function changePM(id, name, phase, row, value) {
 	return {type: CHANGE_PM, id, name, phase, row, value}
+}
+function changeSteps(number) {
+	return {type: CHANGE_STEPS, number}
 }

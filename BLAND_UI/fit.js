@@ -10,23 +10,51 @@ var Fit = React.createClass({displayName: "fit",
     }
     console.log(store.getState());
     document.getElementById('rmvfit').innerHTML = '';
+    document.getElementById('fitButtonDiv').innerHTML = '';
+  },
+
+  handleClick2: function(e) {
+    var x = document.getElementsByTagName('input');
+    for(var i = 0; i < x.length; i++) {
+      if(x[i].type === 'checkbox') {
+        console.log(x[i].id);
+        console.log(document.getElementById(x[i].id).checked)
+        if(!document.getElementById(x[i].id).checked) {
+          $('#' + x[i].id).click()
+        }
+      }
+    }
   },
 
   handleChange2: function(e) {
     console.log(e)
     console.log(e.target.value);
-    console.log(e.target.id.replace('pm', ''))
+    console.log(e.target.id.replace('pm1', ''))
     console.log(document.getElementById(e.target.id.replace('pm1', '')))
     el = document.getElementById(e.target.id.replace('pm1', ''))
     store.dispatch(changePM(e.target.id.replace('pm1', ''), el.getAttribute('name'), el.getAttribute('data-phase'), el.getAttribute('data-row'), e.target.value));
     console.log(store.getState())
   },
 
+  handleChange3: function(e) {
+    console.log(e.target.value);
+    store.dispatch(changeSteps(e.target.value));
+    console.log(store.getState());
+  },
+
   handleChange: function(e) {
     console.log(e.target.name, e.target.getAttribute('data-phase'), e.target.getAttribute('data-row'))
     if(e.target.checked) {
       if(document.getElementById('rmvfit').innerHTML === '') {
-        ReactDOM.render(React.createElement('button', {onClick: this.handleClick}, 'Remove all fits'), document.getElementById('rmvfit'));
+        ReactDOM.render(React.createElement('button', {className: 'btn', onClick: this.handleClick}, 'Remove all fits'), document.getElementById('rmvfit'));
+      }
+      if(document.getElementById('steps').innerHTML === '') {
+        ReactDOM.render(React.createElement('span', null, 'Steps: ',
+          React.createElement('input', {type: 'text', id: 'steps_input', style: {width: 25}, onChange: this.handleChange3})), document.getElementById('steps')
+        )
+      }
+      if(document.getElementById('fitButtonDiv').innerHTML === '') {
+        ReactDOM.render(React.createElement('button', {className: 'btn', onClick: handleOnClick2}, 'Fit'), document.getElementById('fitButtonDiv'));
       }
       console.log(store.getState())
       store.dispatch(addFit(e.target.id))
@@ -34,7 +62,8 @@ var Fit = React.createClass({displayName: "fit",
       console.log(e.target.id + 'pm')
       console.log(document.getElementById(e.target.id + 'pm'))
       ReactDOM.render(React.createElement("span", null, "± ",
-        React.createElement("input", {type: 'text', id:e.target.id+'pm1', style: {width: 25}, onChange: this.handleChange2})), document.getElementById(e.target.id+"pm"))
+        React.createElement("input", {type: 'text', id:e.target.id+'pm1', style: {width: 25}, onChange: this.handleChange2})), document.getElementById(e.target.id+"pm")
+      )
     }
     else {
       store.dispatch(removeFit(e.target.id))
@@ -48,18 +77,29 @@ var Fit = React.createClass({displayName: "fit",
 
     for(var i = 0; i < x.length; i++) {
       if(x[i].type === 'checkbox') {
-        //console.log('foolish mortal')
-        //console.log(x[i])
         if(typeof store.getState()['myReducer5'][0][x[i].id] !== 'undefined') {
           console.log('hit')
           console.log(x[i])
           x[i].checked = true
           ReactDOM.render(React.createElement("span", null, "± ",
-            React.createElement("input", {type: 'text', id:x[i].id+'pm1', value: '', style: {width: 25}, onChange: this.handleChange2})), document.getElementById(x[i].id+"pm"))
+            React.createElement("input", {type: 'text', id:x[i].id+'pm1', style: {width: 25}, onChange: this.handleChange2})), document.getElementById(x[i].id+"pm"))
           console.log(document.getElementById(x[i].id+'pm1'))
-          document.getElementById(x[i].id+'pm1').value = store.getState()['myReducer5'][0][x[i].id]['pm'];
+          if(typeof store.getState()['myReducer5'][0][x[i].id]['pm'] !== 'undefined') {
+            document.getElementById(x[i].id+'pm1').value = store.getState()['myReducer5'][0][x[i].id]['pm'];
+          }
           if(document.getElementById('rmvfit').innerHTML === '') {
-            ReactDOM.render(React.createElement('button', {onClick: this.handleClick}, 'Remove all fits'), document.getElementById('rmvfit'));
+            ReactDOM.render(React.createElement('button', {className: 'btn', onClick: this.handleClick}, 'Remove all fits'), document.getElementById('rmvfit'));
+          }
+          if(document.getElementById('fitButtonDiv').innerHTML === '') {
+            ReactDOM.render(React.createElement('button', {className: 'btn', onClick: handleOnClick2}, 'Fit'), document.getElementById('fitButtonDiv'));
+          }
+          if(document.getElementById('steps').innerHTML === '') {
+            ReactDOM.render(React.createElement('span', null, 'Steps: ',
+              React.createElement('input', {type: 'text', id: 'steps_input', style: {width: 25}, onChange: this.handleChange3})), document.getElementById('steps')
+            )
+            if(typeof store.getState()['myReducer5'][0]['steps'] !== 'undefined') {
+              document.getElementById('steps_input').value = store.getState()['myReducer5'][0]['steps'];
+            }
           }
         }
       }
@@ -67,28 +107,68 @@ var Fit = React.createClass({displayName: "fit",
   },
 
   render: function() {
-    console.log(store.getState());
-    //store.dispatch(addFit('hello', 'world'))
-    //console.log(store.getState()['myReducer4']['Phases'][0][1][0]['space'])
     state = store.getState();
+    console.log(Object.keys(state['myReducer5'][0]).length)
+    console.log(store.getState());
     document.getElementById('inner').style.visibility = 'hidden';
 		document.getElementById('below').style.visibility = 'hidden';
+    document.getElementById('mybtn').style.visibility = "visible";
     console.log(typeof state['myReducer3'][0]['zero'])
+    var show_message = true
+    var show_atom = [false]
+    var show_inst = false
+    var show_cell = [false]
+    var show_phase = [false]
+    var red3 = state['myReducer3'][0]
+    if(red3['scale'] !== '' || red3['u'] !== '' || red3['v'] !== '' || red3['w'] !== '' || red3['eta'] !== '' || red3['zero'] !== '') {
+      show_message = false
+      show_inst = true
+    }
+    for(var phase in state['myReducer4']['Phases']) {
+      for(var t1 in state['myReducer4']['Phases'][phase][0]) {
+        /*for(var t2 in state['myReducer4']['Phases'][phase][0][t1]) {
+          console.log(t2)
+          console.log(state['myReducer4']['Phases'][phase][0][t1][t2])
+          if(state['myReducer4']['Phases'][phase][0][t1][t2] !== '') {
+            show_message = false
+          }
+        }*/
+        var temp = state['myReducer4']['Phases'][phase][0][t1]
+        if(temp['x'] !== '' || temp['y'] !== '' || temp['z'] !== '' || temp['occupancy'] !== '' || temp['thermal'] !== '') {
+          show_message = false
+          show_atom[phase] = true
+          show_phase[phase] = true
+        }
+      }
+      var temp2 = state['myReducer4']['Phases'][phase][1][0]
+      if(temp2['a'] !== '' || temp2['b'] !== '' || temp2['c'] !== '' || temp2['alpha'] !== '' || temp2['beta'] !== '' || temp2['gamma'] !== '') {
+        show_message = false
+        show_cell[phase] = true
+        show_phase[phase] = true
+      }
+      console.log('shows are')
+      console.log(show_cell)
+      console.log(show_phase)
+      console.log(show_atom)
+    }
     return (
       React.createElement("div", null,
-        React.createElement("div", {id: 'rmvfit'}),
-        !!state['myReducer3'][0]['scale'] && React.createElement("center", {style: {marginBottom: 15}}, "Instrument"),
+        !show_message && React.createElement("span", null, React.createElement("button", {className: 'btn', onClick: this.handleClick2}, 'Fit all parameters')),
+        React.createElement("span", {style: {marginLeft: 10}, id: 'rmvfit'}),
+        show_message && React.createElement("center", null, "Please enter atom, cell, and instrument information."),
+        !show_message && React.createElement("center", null, "Check each parameter you want to fit."),
+        show_inst && React.createElement("center", {style: {marginTop: 15, marginBottom: 15}}, "Instrument"),
         React.createElement("center", null,
           !!state['myReducer3'][0]['scale'] && React.createElement("span", {style: {marginRight: 30}},
             React.createElement("input", {style: {marginRight: 5}, 'data-row': '', 'data-phase': '', name: 'scale', type: 'checkbox', id:'scale', onChange:this.handleChange}),
             'Scale Factor: ' + state['myReducer3'][0]['scale'],
             React.createElement("span", {style: {marginLeft: 5}, id:'scale' + 'pm'})
           ),
-          !!state['myReducer3'][0]['wavelength'] && React.createElement("span", {style: {marginRight: 30}},
-            React.createElement("input", {style: {marginRight: 5}, 'data-row': '', 'data-phase': '', name: 'wavelength', type: 'checkbox', id:'wavelength', onChange: this.handleChange}),
-            'Wavelength: ' + state['myReducer3'][0]['wavelength'],
-            React.createElement("span", {style: {marginLeft: 5}, id:'wavelength' + 'pm'})
-          ),
+          //!!state['myReducer3'][0]['wavelength'] && React.createElement("span", {style: {marginRight: 30}},
+          //  React.createElement("input", {style: {marginRight: 5}, 'data-row': '', 'data-phase': '', name: 'wavelength', type: 'checkbox', id:'wavelength', onChange: this.handleChange}),
+          //  'Wavelength: ' + state['myReducer3'][0]['wavelength'],
+          //  React.createElement("span", {style: {marginLeft: 5}, id:'wavelength' + 'pm'})
+          //),
           !!state['myReducer3'][0]['u'] && React.createElement("span", {style: {marginRight: 30}},
             React.createElement("input", {style: {marginRight: 5}, 'data-row': '', 'data-phase': '', name: 'u', type: 'checkbox', id:'u', onChange: this.handleChange}),
             'u: ' + state['myReducer3'][0]['u'],
@@ -118,10 +198,11 @@ var Fit = React.createClass({displayName: "fit",
         React.createElement("div", null,
           state['myReducer4']['Phases'].map((phase, i) => {
             console.log(phase[0])
+
             return (
               React.createElement("div", null,
-                !!phase[1][0]['space'] && React.createElement("center", {style: {marginTop: 15}}, "Phase " + (i + 1)),
-                !!phase[1][0]['space'] && React.createElement("center", {style: {marginTop: 15, marginBottom: 15}}, "Unit Cell"),
+                show_phase[i] && React.createElement("center", {style: {marginTop: 15}}, "Phase " + (i + 1)),
+                show_cell[i] && React.createElement("center", {style: {marginTop: 15, marginBottom: 15}}, "Unit Cell"),
                 React.createElement("center", null,
                   !!phase[1][0]['a'] && React.createElement("span", {style: {marginRight: 30}},
                     React.createElement("input", {style: {marginRight: 5}, 'data-row': '', 'data-phase': i + 1, name: 'a', type: 'checkbox', id:'a' + (i + 1), onChange: this.handleChange}),
@@ -154,12 +235,15 @@ var Fit = React.createClass({displayName: "fit",
                     React.createElement("span", {style: {marginLeft: 5}, id:'gamma' + (i + 1) + 'pm'})
                   )
                 ),
-                !!phase[0][0]['label'] && React.createElement("center", {style: {marginTop: 15, marginBottom: 15}}, "Atoms"),
-                !phase[0][0]['label'] && !phase[1][0]['space'] && !state['myReducer3'][0]['scale'] && React.createElement("center", null, "Please enter atom, cell, and instrument information."),
+                show_atom[i] && React.createElement("center", {style: {marginTop: 15, marginBottom: 15}}, "Atoms"),
+
                 React.createElement("div", null,
                   phase[0].map((row, j) => {
                     console.log(typeof row['occupancy'])
+
+                    console.log('show message is', show_message)
                     return (
+                      //show_message && React.createElement("center", null, "Please enter atom, cell, and instrument information."),
                       React.createElement("center", null,
                         (row['label'] !== '') && React.createElement("span", {style: {marginRight: 30}}, row['label']),
                         (row['x'] !== '') && React.createElement("span", {style: {marginRight: 30}},
@@ -194,6 +278,10 @@ var Fit = React.createClass({displayName: "fit",
               )
             );
           })
+        ),
+        React.createElement("center", {id: 'steps', style: {marginTop: 30}}
+        ),
+        React.createElement("div", {id: 'fitButtonDiv', style: {textAlign: 'right', marginRight: 15}}
         )
       )
     );

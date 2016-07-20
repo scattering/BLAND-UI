@@ -1,0 +1,72 @@
+<link rel="stylesheet" type="text/css" href="http://adazzle.github.io/react-data-grid/build/react-data-grid.css"></link>
+<link rel="stylesheet" type="text/css" href="http://adazzle.github.io/react-data-grid/assets/css/bootstrap.min.css"></link>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-with-addons.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
+<div id='hi'></div>
+<div id='but'></div>
+<script>
+		send = JSON.stringify("{{token}}")
+		xhr = new XMLHttpRequest();
+		var url = "http://localhost:8001/bland/stat/";
+		xhr.open("POST", url, true);
+		xhr.responseType = "text"
+		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState == 4 && xhr.status == 200) {
+				console.log(xhr.responseText)
+				json = JSON.parse(xhr.responseText)
+				console.log(json)
+				if(json !== "Sorry, the key doesn't exist") {
+					ReactDOM.render(React.createElement("div", null,
+						React.createElement("div", null,
+							!json['complete'] && React.createElement("div", null, "Step: ", (json['step'] - 1)),
+							json['complete'] && React.createElement("div", null, "Complete!"),
+							React.createElement("div", null, "Time: ", json['time'])
+						),
+						React.createElement("div", null,
+							json['param_list'].map((param, i) => {
+								return React.createElement("div", null,
+									React.createElement("span", null, param + ': '),
+									React.createElement("span", null, json['params'][i])
+								);
+							})
+						)
+					), document.getElementById('hi'));
+
+					if(json['complete']) {
+						console.log("complete!")
+						ReactDOM.render(React.createElement("button", {className: 'btn', onClick: clickMe}, 'Click for plots!'), document.getElementById('but'));
+					}
+				}
+			else {
+				alert(json)
+				window.location.href = 'http://localhost:8001/bland/'
+			}
+		}
+	}
+		xhr.send(send)
+
+	function clickMe() {
+		xhr2 = new XMLHttpRequest();
+		var url2 = "http://localhost:8001/bland/files/";
+		xhr2.open("POST", url2, true);
+		xhr2.responseType = "blob";
+		xhr2.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		xhr2.onreadystatechange = function() {
+			if(xhr2.readyState == 4 && xhr2.status == 200) {
+				var b = document.createElement("a");
+				document.body.appendChild(b);
+				b.style = "display: none";
+				//var blob = new Blob([xhr.responseText], {'type': "application/x-gzip"})
+				var url3 = window.URL.createObjectURL(xhr2.response);
+				b.href = url3;
+				b.download = 'images.zip';
+				b.click();
+				window.URL.revokeObjectURL(url3);
+			}
+		}
+		console.log(send)
+		xhr2.send(send);
+	}
+
+</script>

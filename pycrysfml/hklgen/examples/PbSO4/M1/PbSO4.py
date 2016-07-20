@@ -87,7 +87,7 @@ def fit():
     problem = M
     problem.path = '/mnt/hgfs/Ubuntu_Shared/pycrysfml/hklgen/examples/PbSO4/PbSO4.py'
     mapper = SerialMapper
-    extra_opts = {'burn': 100, 'init': 'eps', 'steps': 0, 'samples': 10000}
+    extra_opts = {'burn': 0, 'init': 'eps', 'steps': 5, 'samples': 10000}
     
     fitdriver = FitDriver(
             DreamFit, problem=problem, abort_test=lambda: False,
@@ -119,7 +119,7 @@ if __name__ == "__main__":
     from bumps.mapper import SerialMapper
     from bumps.fitproblem import FitProblem
     from bumps.options import BumpsOpts
-    from bumps.cli import setup_logging, make_store, store_overwrite_query
+    from bumps.cli import setup_logging, make_store, store_overwrite_query, save_best, beep
     #main()
     fit()
 else:

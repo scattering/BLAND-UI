@@ -1,14 +1,3 @@
-/*var Models = React.createClass({displayName: 'models',
-  render: function() {
-    return (
-      React.createElement("div", null,
-        React.createElement("div", {style: {'marginBottom': '30px'}}, React.createElement(Cell, null)),
-        React.createElement(Grid, null)
-      )
-    );
-  }
-})
-*/
 
 var Tabs = ReactTabs.Tabs;
 var Tab = ReactTabs.Tab;
@@ -17,44 +6,14 @@ var TabList = ReactTabs.TabList;
 
 var Models = React.createClass({displayName: 'models',
 
-  /*getInitialState: function() {
-    return {
-      selectedIndex: 0,
-      tabs: [0],
-    };
-  },*/
-
-  /*handleSelect: function(index, last) {
-    console.log('Selected tab: ' + index + ', Last tab: ' + last);
-  },*/
-
   addTab: function() {
-    //console.log(store.getState()['myReducer4']['Selected'])
-    /*len = this.state.tabs.length;
-    this.state.tabs.push(len);
-    this.setState({
-      selectedIndex: this.state.tabs.length - 1,
-    });*/
     store.dispatch(addPhase());
     store.dispatch(changeTab(store.getState()['myReducer4']['Phases'].length - 1));
-    //console.log(store.getState()['myReducer4']['Selected']);
   },
 
   removeTab: function(index) {
-    /*if(this.state.tabs.length > 1) {
-      this.state.tabs.splice(index, 1);
-      if(this.state.tabs.length > 0) {
-        this.setState({
-          selectedIndex: this.state.tabs.length - 1,
-        });
-      }
-      this.forceUpdate();
-      console.log(this.state);
-    }*/
-    //console.log(store.getState())
     store.dispatch(changeTab(0));
     store.dispatch(removePhase(index));
-    //console.log(store.getState()['myReducer4']['Selected'])
   },
 
   componentDidMount: function() {
@@ -68,16 +27,12 @@ var Models = React.createClass({displayName: 'models',
   },
 
   handleSelect: function(index, last) {
-    //console.log("Selected " + index)
-  //  console.log(store.getState())
     store.dispatch(changeTab(index));
   },
 
   render: function() {
     state = store.getState();
-    //console.log(this.refs.grid)
     myState = state['myReducer4']['Phases'];
-    //console.log(state)
     return (
       React.createElement("div", null,
         React.createElement("p", null,
@@ -90,13 +45,8 @@ var Models = React.createClass({displayName: 'models',
                 React.createElement(Tab, {key: i}, "Phase " + (i + 1), React.createElement("a", {style: {'marginLeft': '10px', 'color': '#428bca'}, href:"#", onClick: this.removeTab.bind(this, i)}, "✕"))
               );
             })
-            /*React.createElement(Tab, null, "Foo"),
-            React.createElement(Tab, null, "Bar"),
-            React.createElement(Tab, null, "Baz")*/
-
           ),
           myState.map((phase, i) => {
-            //console.log("hello world")
             return (
               React.createElement(TabPanel, {key:i},
                 React.createElement("div", null,
@@ -112,15 +62,6 @@ var Models = React.createClass({displayName: 'models',
               )
             );
           })
-          /*React.createElement(TabPanel, null,
-            React.createElement("div", null, "Hello from Foo")
-          ),
-          React.createElement(TabPanel, null,
-            React.createElement("div", null, "Hello from Bar")
-          ),
-          React.createElement(TabPanel, null,
-            React.createElement("div", null, "Hello from Baz")
-          )*/
         )
       )
     );

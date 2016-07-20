@@ -612,6 +612,10 @@ function myReducer5(state = initialState5, action) {
           newState[action.id]['row'] = action.row;
           newState[action.id]['pm'] = action.value;
           return [newState];
+        case CHANGE_STEPS:
+          newState = state[0];
+          newState['steps'] = action.number;
+          return [newState]
         default:
           return state;
     }

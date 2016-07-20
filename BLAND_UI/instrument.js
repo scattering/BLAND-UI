@@ -137,6 +137,7 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 
     handleMount: function() {
 	     document.getElementById('mybtn').style.visibility = "visible";
+       //document.getElementById('fitbtn').style.visibility = "visible";
     },
 
     render : function() {
