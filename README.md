@@ -3,9 +3,9 @@ User interface for the BLAND software library
 
 Compiled with Ubuntu 16.04, so I'd recommend using with Linux right now. 
 
-Might require recompiling pycrysfml
+Requires recompiling pycrysfml.
 
-Requires Django, Numpy, Demjson.
+Requires Django, Numpy, Demjson, Django-Redis.
 
 1: cd BLAND_UI
 
