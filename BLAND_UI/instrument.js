@@ -1,10 +1,5 @@
 var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 
-    /*getInitialState : function(){
-      var fakeRows = create3(1);
-      return {rows :fakeRows};
-    },*/
-
     getColumns3: function() {
       var clonedColumns = columns3.slice();
       clonedColumns.map((col, idx) => {
@@ -111,11 +106,16 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 				break
       case 'mode':
         action = changeMode(updatedRowData.updated.mode, i)
+        if(updatedRowData.updated.mode !== '') {
+          document.getElementById("drop2").style.display = 'inline'
+        }
+        else {
+          document.getElementById("drop2").style.display = 'none'
+        }
         break
 			default:
 				action = doNothing()
 		}
-		//console.log('hmm')
 		store.dispatch(action)
       }
     },
@@ -137,10 +137,10 @@ var Instrument = onClickOutside(React.createClass({displayName: 'component3',
 
     handleMount: function() {
 	     document.getElementById('mybtn').style.visibility = "visible";
-       //document.getElementById('fitbtn').style.visibility = "visible";
     },
 
     render : function() {
+      document.getElementById('drop3').style.visibility = 'hidden';
       document.getElementById('inner').style.visibility = 'hidden';
       document.getElementById('below').style.visibility = 'visible';
       return (

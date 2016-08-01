@@ -350,11 +350,12 @@ function xyChart(options_override) {
                 .attr("height", 10)
                 .style("fill", colors[i%colors.length])
                 .on("mouseover", function() {
-                  //d3.selectAll('.line')[0][i].classList.add('highlight');
+                  d3.selectAll('.line')[0][i].classList.add('highlight');
                 })
                 .on("mouseout", function() {
-                  //d3.selectAll('.line')[0][i].classList.remove('highlight');
+                  d3.selectAll('.line')[0][i].classList.remove('highlight');
                 });
+
               g.append("text")
                 .attr("x", 15-options.legend.left)
                 .attr("y", i * 25 + 25)
@@ -363,10 +364,10 @@ function xyChart(options_override) {
                 .style("text-anchor", "start")
                 .style("fill", colors[i%colors.length])
                 .on("mouseover", function() {
-                    //d3.selectAll('.line')[0][i].classList.add('highlight');
+                    d3.selectAll('.line')[0][i].classList.add('highlight');
                 })
                 .on("mouseout", function() {
-                    //d3.selectAll('.line')[0][i].classList.remove('highlight');
+                    d3.selectAll('.line')[0][i].classList.remove('highlight');
                 });
             });
           el.selectAll("text")
@@ -710,22 +711,6 @@ function xyChart(options_override) {
         .style("opacity", "0.7");
       dsvg.selectAll(".grid path").style("stroke-width", "0");
       return dsvg.node(); // user outerHTML of this
-    }
-
-    chart.print_plot = function(fileName) {
-      var svg = chart.export_svg();
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-      var serializer = new XMLSerializer();
-      var svg_blob = new Blob([serializer.serializeToString(svg)],
-                            {'type': "image/svg+xml"});
-      var url = window.URL.createObjectURL(svg_blob);
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      //var svg_win = window.open(url, "_blank", "height=750,width=1250");
     }
 
     chart.autofit = function() {

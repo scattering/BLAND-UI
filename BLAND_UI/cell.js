@@ -1,10 +1,5 @@
 var Cell = onClickOutside(React.createClass({displayName: 'component2',
 
-    /*getInitialState : function(){
-      var fakeRows = create2(1);
-      return {rows :fakeRows};
-    },*/
-
     getColumns2: function() {
         var clonedColumns = columns2.slice();
         clonedColumns.map((col, idx) => {
@@ -21,15 +16,7 @@ var Cell = onClickOutside(React.createClass({displayName: 'component2',
 
   	componentDidMount1: function() {
       document.getElementById('mybtn').style.visibility = "visible";
-  		//store.subscribe(() => this.forceUpdate());
-      //store.subscribe(this.update);
   	},
-
-  //  update: function() {
-  //    if (this.isMounted()) {
-  //      this.forceUpdate();
-  //    }
-  //  },
 
   handleClickOutside: function (e) {
     this.refs.cell.deselectCells();
@@ -116,50 +103,23 @@ var Cell = onClickOutside(React.createClass({displayName: 'component2',
 		    return real.length;
     },
 
-    //handleMount: function() {
-	     //document.getElementById('mybtn').style.visibility = "visible";
-    //},
-
     render : function() {
       document.getElementById('inner').style.visibility = 'visible';
       document.getElementById('below').style.visibility = 'hidden';
       return (
-      	//React.createElement("div", {id: 'main'},
-                  React.createElement(ReactDataGrid, {
-                      ref: 'cell',
-                      enableCellSelect: true,
-                      columns: this.getColumns2(),
-                      rowGetter: this.rowGetter,
-                      rowsCount: this.getSize2(),
-                      onGridRowsUpdated: this.handleGridRowsUpdated2,
-                      onClickOutside: this.handleClickOutside,
-                      rowHeight: 50,
-                      minHeight: 108,
-                      rowScrollTimeout: 200,
-                      componentDidMount: this.componentDidMount1()
-                    })
-                  /*React.createElement("div", {id: 'drop', style: { 'width': '300px', 'marginTop': '10px' }},
-                    React.createElement(DropzoneComponent, {
-                      config: componentConfig,
-                      eventHandlers: eventHandlers,
-                      djsConfig: djsConfig,
-                      componentDidMount: this.componentDidMount2(),
-                      //getDropzone: this.getDropzone()
-                    })
-                  )*/
-      	//)
+          React.createElement(ReactDataGrid, {
+              ref: 'cell',
+              enableCellSelect: true,
+              columns: this.getColumns2(),
+              rowGetter: this.rowGetter,
+              rowsCount: this.getSize2(),
+              onGridRowsUpdated: this.handleGridRowsUpdated2,
+              onClickOutside: this.handleClickOutside,
+              rowHeight: 50,
+              minHeight: 108,
+              rowScrollTimeout: 200,
+              componentDidMount: this.componentDidMount1()
+          })
       );
     }
 }));
-
-
-//document.getElementById('place').innerHTML += React.createElement("div", {id: 'drop', style: { 'width': '300px', 'marginTop': '10px'}})
-
-/*ReactDOM.render(
-  React.createElement("div", {id: 'lower'},
-      React.createElement(DropzoneComponent,
-      {
-        config: componentConfig, eventHandlers: eventHandlers, djsConfig: djsConfig, componentDidMount: componentDidMount2()
-      }),
-      React.createElement("div", {id: 'lowest'}, 'Upload a .cif or .pcr file to fill in your unit cell and atomic information.')
-), document.getElementById('inner'))*/

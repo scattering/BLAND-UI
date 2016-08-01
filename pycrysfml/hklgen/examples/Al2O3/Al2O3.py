@@ -1,4 +1,4 @@
-import os,sys;sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import os,sys;sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import numpy as np
 import fswig_hklgen as H
 import hkl_model as Mod
@@ -32,6 +32,7 @@ def fit():
     m.scale.range(0,10)
     for atomModel in m.atomListModel.atomModels:
         atomModel.B.range(0, 10)
+        print("stuff", atomModel.B(), atomModel.occc())
         if (atomModel.atom.multip == atomModel.sgmultip):
             # atom lies on a general position
             atomModel.x.pm(0.1)

@@ -128,43 +128,24 @@
 <link rel="stylesheet" type="text/css" href="http://localhost:8080/temp/filepicker.css"></link>
 <link rel="stylesheet" type="text/css" href="http://localhost:8080/temp/dropzone.min.css"></link>
 <link rel="stylesheet" href="http://instructure-react.github.io/library/shared.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
 
 <center><h1>Welcome to BLAND UI</h1></center>
 
 <div id="content"></div>
 
+
 <div style="font-size:0">
-<div id="inner" style="width:20%;margin-top:10px;margin-right:60%;display:inline-block;font-size:15;"></div>
-<div id="below" style="width:20%;display:inline-block;font-size:15;"/></div>
+<span id="inner" style="width:20%;margin-top:10px;display:inline-block;font-size:15;"></span>
+<span id="upload" style="width:20%;display:inline-block;font-size:15;margin-left:20%;"></span>
+<span id="below" style="width:20%;display:inline-block;margin-left:20%;font-size:15;"/></span>
 </div>
 
 <div id="alignRight" style="text-align:right; margin-right:15px; margin-bottom:10px">
 	<br/>
   <span><button id="mybtn" class="btn" onclick="handleOnClick()" type="button" style="visibility:hidden;">Calculate</button></span>
-  <!--span><button id="fitbtn" class="btn" onclick="handleOnClick2()" type="button" style="visibility:hidden">Fit</button></span-->
 </div>
 
-<!--div id="try">Click me!</div-->
-<script>
-  calculated = false
-  observed = false
-  data = []
-  data1 = []
-  var num = 1
-  /*document.getElementById('try').addEventListener('click', function() {
-    if(data[0]) {
-      chart = xyChart({show_line: true, show_errorbars: true, ytransform: 'linear'})
-      c = d3.select("#plot1")
-        .data([data[0].data])
-        .call(chart);
-      console.log('Plotted');
-    }
-    else {
-      alert('No data to plot!');
-    }
-  }, false);*/
-</script>
-<!--<div id="plot1"></div-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-with-addons.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.min.js"></script>

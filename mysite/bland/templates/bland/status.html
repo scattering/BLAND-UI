@@ -1,72 +1,133 @@
 <link rel="stylesheet" type="text/css" href="http://adazzle.github.io/react-data-grid/build/react-data-grid.css"></link>
 <link rel="stylesheet" type="text/css" href="http://adazzle.github.io/react-data-grid/assets/css/bootstrap.min.css"></link>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-with-addons.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
+<script src="http://localhost:8080/temp/react-bootstrap.js"></script>
+<center style="font-size:30px">Fit Status</center>
 <div id='hi'></div>
 <div id='but'></div>
 <script>
-		send = JSON.stringify("{{token}}")
-		xhr = new XMLHttpRequest();
-		var url = "http://localhost:8001/bland/stat/";
+		var ListGroup = ReactBootstrap.ListGroup;
+		var ListGroupItem = ReactBootstrap.ListGroup;
+		var send = JSON.stringify("{{token}}")
+		var xhr = new XMLHttpRequest();
+		var url = location.origin + "/bland/stat/";
 		xhr.open("POST", url, true);
 		xhr.responseType = "text"
 		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 		xhr.onreadystatechange = function() {
 			if(xhr.readyState == 4 && xhr.status == 200) {
-				console.log(xhr.responseText)
-				json = JSON.parse(xhr.responseText)
-				console.log(json)
+				var json = JSON.parse(xhr.responseText)
 				if(json !== "Sorry, the key doesn't exist") {
-					ReactDOM.render(React.createElement("div", null,
-						React.createElement("div", null,
-							!json['complete'] && React.createElement("div", null, "Step: ", (json['step'] - 1)),
-							json['complete'] && React.createElement("div", null, "Complete!"),
-							React.createElement("div", null, "Time: ", json['time'])
-						),
-						React.createElement("div", null,
-							json['param_list'].map((param, i) => {
-								return React.createElement("div", null,
-									React.createElement("span", null, param + ': '),
-									React.createElement("span", null, json['params'][i])
-								);
-							})
-						)
-					), document.getElementById('hi'));
-
-					if(json['complete']) {
-						console.log("complete!")
-						ReactDOM.render(React.createElement("button", {className: 'btn', onClick: clickMe}, 'Click for plots!'), document.getElementById('but'));
-					}
+					renderStatus(json);
+					var refrId = setInterval(function() {
+						helper();
+						if(document.getElementById('but').innerHTML !== '') {
+							clearInterval(refrId)
+						}
+					}, 5000)
 				}
 			else {
-				alert(json)
-				window.location.href = 'http://localhost:8001/bland/'
+				alert("Sorry, that key doesn't exist. Try refreshing the page, or go to http://localhost:8001/bland/")
 			}
 		}
 	}
 		xhr.send(send)
 
 	function clickMe() {
-		xhr2 = new XMLHttpRequest();
-		var url2 = "http://localhost:8001/bland/files/";
+		var send = JSON.stringify("{{token}}")
+		var xhr2 = new XMLHttpRequest();
+		var url2 = location.origin + "/bland/files/";
 		xhr2.open("POST", url2, true);
 		xhr2.responseType = "blob";
 		xhr2.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 		xhr2.onreadystatechange = function() {
 			if(xhr2.readyState == 4 && xhr2.status == 200) {
+				console.log('saving')
 				var b = document.createElement("a");
 				document.body.appendChild(b);
 				b.style = "display: none";
-				//var blob = new Blob([xhr.responseText], {'type': "application/x-gzip"})
 				var url3 = window.URL.createObjectURL(xhr2.response);
 				b.href = url3;
 				b.download = 'images.zip';
 				b.click();
-				window.URL.revokeObjectURL(url3);
+				setTimeout(function(){
+        	document.body.removeChild(b);
+        	window.URL.revokeObjectURL(url3);
+    		}, 100);
 			}
 		}
-		console.log(send)
 		xhr2.send(send);
+	}
+
+	function clickMe2() {
+		var send = JSON.stringify("{{token}}")
+		var xhr3 = new XMLHttpRequest();
+		var url3 = location.origin + "/bland/stat/";
+		xhr3.open("POST", url3, true);
+		xhr3.responseType = "text";
+		xhr3.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		xhr3.onreadystatechange = function() {
+			if(xhr3.readyState == 4 && xhr3.status == 200) {
+				var json = JSON.parse(xhr3.responseText);
+				document.getElementById('hi').innerHTML = '';
+				renderStatus(json);
+				var b = document.createElement("a");
+				document.body.appendChild(b);
+				b.style = "display: none";
+				var url4 = window.URL.createObjectURL(new Blob([xhr3.responseText], {type: "application/json"}));
+				b.href = url4;
+				b.download = 'params.json';
+				b.click();
+				setTimeout(function(){
+        	document.body.removeChild(b);
+        	window.URL.revokeObjectURL(url4);
+    		}, 100);
+			}
+		}
+		xhr3.send(send)
+	}
+
+	function helper() {
+		var send = JSON.stringify("{{token}}")
+		var xhr3 = new XMLHttpRequest();
+		var url3 = location.origin + "/bland/stat/";
+		xhr3.open("POST", url3, true);
+		xhr3.responseType = "text";
+		xhr3.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		xhr3.onreadystatechange = function() {
+			if(xhr3.readyState == 4 && xhr3.status == 200) {
+				var json = JSON.parse(xhr3.responseText);
+				renderStatus(json);
+			}
+		}
+		xhr3.send(send)
+	}
+
+
+	function renderStatus(json) {
+		document.getElementById('hi').innerHTML = ''
+		document.getElementById('but').innerHTML = ''
+		ReactDOM.render(React.createElement("div", {style: {marginLeft: 10, marginTop: 30}},
+			React.createElement(ListGroup, null,
+				!json['complete'] && React.createElement(ListGroupItem, {style: {fontWeight: 'bold'}}, "Step: ", (json['step'] - 1)),
+				json['complete'] && React.createElement(ListGroupItem, {style: {fontWeight: 'bold'}}, "Complete!"),
+				React.createElement(ListGroupItem, null, "Time: ", json['time']),
+				json['param_list'].map((param, i) => {
+					return React.createElement(ListGroupItem, {key: 'parent_div' + i}, param + ': '	+ json['params'][i]);
+				}),
+
+				React.createElement(ListGroupItem, null, "χ²: " + json['chisq'])
+			),
+			React.createElement("button", {className: 'btn', onClick: clickMe2}, 'Click to save parameters')
+		), document.getElementById('hi'));
+
+		if(json['complete']) {
+			console.log("complete!")
+			document.getElementById('but').innerHTML = '';
+			ReactDOM.render(React.createElement("button", {style: {marginLeft: 10}, className: 'btn', onClick: clickMe}, 'Click for plots!'), document.getElementById('but'));
+		}
 	}
 
 </script>

@@ -7,7 +7,6 @@
 #   FortWrap/Swig Version based on original from 2013
 #
 
-from ctypes import *
 from pycrysfml import *
 import os
 import numpy as np
@@ -121,16 +120,10 @@ class CrystalCell(crystal_cell_type):
         LVec = FloatVector([0 for i in range(3)])
         self.get_crystal_cell_cell(LVec)
         return LVec
-    def lengthList(self):
-        LVec = self.length()
-        return list(LVec)
     def angle(self):
         AVec = FloatVector([0 for i in range(3)])
         self.get_crystal_cell_ang(AVec)
         return AVec
-    def angleList(self):
-        AVec = self.angle()
-        return list(AVec)
     @property
     def volume(self):
         return self.get_crystal_cell_cellvol()
@@ -244,7 +237,7 @@ class Atom(atom_type):
             funcs.init_atom_type(self)
             self.set_atom_lab(ljust(args[0],20)) # set atom label
             self.set_atom_chemsymb(ljust(args[1], 2)) # set element
-            self.set_atom_sfacsymb(ljust(self.element(), 4))
+            self.set_atom_sfacsymb(ljust(self.element, 4))
             self.set_atom_x(FloatVector(args[2]))
             self.set_atom_mult(args[3])
             self.set_atom_occ(float(args[4]))
@@ -257,21 +250,10 @@ class Atom(atom_type):
         self.set_atom_x(FloatVector(value))
     def multip(self):
         return self.get_atom_mult()
-    def sfacsymb(self):
-        return getAtom_sfacsymb(self)
-    def setSfacsymb(self):
-        self.set_atom_sfacsymb(self.element())
-    def setMultip(self, value):
-        return self.set_atom_mult(value)
     def occupancy(self):
         return self.get_atom_occ()
     def setOccupancy(self, value):
         self.set_atom_occ(value)
-    def element(self):
-        return getAtom_chemsymb(self)
-    def setElement(self, value):
-        assert len(value) <= 2, "Value must be 2 characters or less"
-        return self.set_atom_chemsymb(value)
     def BIso(self):
         return self.get_atom_biso()
     def setBIso(self, value):
@@ -393,20 +375,9 @@ class AtomList(atom_list_type, matom_list_type):
             
             # TODO: replace following with pycrysfml equivalent
             ## copy information from provided atom list
-            for i, atom in enumerate(self):
-                """for field in atom._fields_:
-                    print field
-                    setattr(atom, field[0], getattr(atoms[i], field[0]))"""
-                atom.setBIso(atoms[i].BIso())
-                atom.setLabel(atoms[i].label())
-                atom.setOccupancy(atoms[i].occupancy())
-                atom.setCoords(atoms[i].coords())
-                atom.setElement(atoms[i].element())
-                atom.setSfacsymb()
-                atom.setMultip(atoms[i].multip())
-                self[i] = atom
-                
-            
+            #for i, atom in enumerate(self):
+            #    for field in atom._fields_:
+            #        setattr(atom, field[0], getattr(atoms[i], field[0]))
     def __len__(self):
         if self.magnetic:
             return self.get_matom_list_natoms()
@@ -1045,11 +1016,6 @@ def calcMagStructFact(refList, atomList, symmetry, cell):
 #   based on the structure factor
 def calcIntensity(refList, atomList, spaceGroup, wavelength, cell=None,
                   magnetic=False, xtal=False, extinctions=None, scale=None, muR=None):
-    
-    #for atom in atomList:
-    #    print atom.label(), "iso:", atom.BIso(), "coords:", atom.coords(), "elem:", atom.element(), "mult:", atom.multip(), "occ:", atom.occupancy()
-    
-    
     # TODO: make sure magnetic phase factor is properly being taken into account
     if (refList.magnetic):
         sfs2 = calcMagStructFact(refList, atomList, spaceGroup, cell)#np.array([np.sum(np.array(sf)*np.conj(np.array(sf))) for sf in sfs])
@@ -1112,14 +1078,6 @@ def removeRange(tt, remove, intensity=None):
             return tt
 
 
-def structWrap(ttMin, ttMax, wavelength, spaceGroup, cell, atomList, muR=None):
-    sMin, sMax = getS(ttMin, wavelength), getS(ttMax, wavelength)
-    refList = hklGen(spaceGroup, cell, sMin, sMax, True, xtal=False)
-    for atom in atomList:
-        print atom.label(), "element:", atom.element(), "iso:", atom.BIso(), "multip:", atom.multip(), "coords:", atom.coords(), "occupancy:", atom.occupancy()
-    sfs2 = np.array(calcStructFact(refList, atomList, spaceGroup, wavelength, xtal=False))
-    return sfs2
-    
 # diffPattern: generates a neutron diffraction pattern from a file containing
 #   crystallographic information or from the same information generated
 #   elsewhere
@@ -1131,7 +1089,7 @@ def diffPattern(infoFile=None, backgroundFile=None, wavelength=1.5403,
                 magnetic=False, info=False, plot=False, saveFile=None,
                 observedData=(None,None), labels=None, base=0, residuals=False, error=None, muR=None):
     background = LinSpline(backgroundFile)
-    sMin, sMax = getS(ttMin, wavelength), getS(ttMax, wavelength)
+    sMin, sMax = getS(ttMin, wavelength), getS(180.0, wavelength)
     if magnetic:
         if (infoFile != None):
             infofile = readMagInfo(infoFile)
@@ -1196,15 +1154,9 @@ def diffPattern(infoFile=None, backgroundFile=None, wavelength=1.5403,
         plotPattern(peaks, background, observedData[0], observedData[1],
                     ttMin, ttMax, ttStep, exclusions, labels=labels, base=base, residuals=residuals, error=error)
         pylab.show()
-        pylab.savefig(os.path.join('/tmp/bland',str('plot.jpg')), dpi=2000)
     if saveFile:
         np.savetxt(saveFile, (tt, intensity), delimiter=" ")
-    tt1 = ["%.3f" % twoTheta(ref.s, wavelength) for ref in refList]
-    intensity1 = intensities    
-    for atom in atomList:
-            print atom.label(), "element:", atom.element(), "iso:", atom.BIso(), "multip:", atom.multip(), "coords:", atom.coords(), "occupancy:", atom.occupancy()    
-    h, k, l = tuple([str(ref.hkl[i]) for ref in refList] for i in xrange(3))
-    return (tt1, tt, intensity, [h,k,l])
+    return (tt, intensity)
 
 
 # printInfo: prints out information about the provided space group and atoms,
@@ -1237,13 +1189,11 @@ def printInfo(cell, spaceGroup, atomLists, refLists, wavelength, symmetry=None, 
     print "Atom information (%d atoms)" % len(atomLists[0])
     print divider
     atomList = atomLists[0]
-    print atomList
     magnetic = atomList.magnetic
     label = [rstrip(getAtom_lab(atom)) for atom in atomList]
     x, y, z = tuple(["%.3f" % atom.coords()[i] for atom in atomList]
                     for i in xrange(3))
-    multip = [str(atom.multip()) for atom in atomList]
-    print "multip is", multip
+    multip = [str(atom.get_atom_mult()) for atom in atomList]
     occupancy = ["%.3f" % (atom.get_atom_occ()*spaceGroup.get_space_group_multip()/atom.get_atom_mult())
                  for atom in atomList]
     # Figure out what the width of each column should be
@@ -1312,15 +1262,13 @@ def plotPattern(peaks, background, ttObs, observed, ttMin, ttMax, ttStep,
     ttCalc = np.linspace(ttMin, ttMax, numPoints)
     if(exclusions != None): ttCalc = removeRange(ttCalc, exclusions)
     intensity = np.array(getIntensity(peaks, background, ttCalc, base=base))
-    print "intensity from plot is ", intensity
     pylab.subplot(211)
     if (observed != None):
         if exclusions:
             ttObs, observed = removeRange(ttObs, exclusions, observed)
-        pylab.plot(ttObs, observed, 'g.', linestyle="None", label="Observed",lw=1)
+        pylab.plot(ttObs, observed, '-go', linestyle="None", label="Observed",lw=1)
     pylab.plot(ttCalc, np.array(intensity), '-b', label="Calculated", lw=1)
     intensityCalc = np.array(getIntensity(peaks, background, ttObs, base=base))
-    print len(ttObs), len(ttCalc)
     pylab.errorbar(ttObs, np.array(observed), yerr=error, fmt=None, ecolor='g')
 #    pylab.fill_between(ttObs, observed, intensity, color="lightblue")
     pylab.xlabel(r"$2 \theta$")

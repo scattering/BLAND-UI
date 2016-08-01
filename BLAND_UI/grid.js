@@ -1,10 +1,5 @@
 var Grid = onClickOutside(React.createClass({displayName: 'component',
 
-    /*getInitialState : function(){
-      var fakeRows = createRows(10);
-      return {rows :fakeRows};
-    },*/
-
     getColumns: function() {
       var clonedColumns = columns.slice();
   	  clonedColumns.map((col, idx) => {
@@ -23,12 +18,6 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
   	this.refs.grid.deselectCells();
 	},
 
-  //update: function() {
-  //  if(this.isMounted()) {
-  //    this.forceUpdate();
-  //  }
-  //},
-
     handleGridRowsUpdated : function(updatedRowData) {
       myState = store.getState()
       tab = myState['myReducer4']['Selected'];
@@ -41,15 +30,6 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
 			case 'atom':
 				action = changeAtom(updatedRowData.updated.atom, i, tab)
 				break
-			/*case 'valence':
-				action = changeValence(updatedRowData.updated.valence, i, tab)
-				break
-			case 'isotope':
-				action = changeIsotope(updatedRowData.updated.isotope, i, tab)
-				break*/
-			//case 'wyckoff':
-			//	action = changeWyckoff(updatedRowData.updated.wyckoff, i)
-			//	break
 			case 'x':
 				if(Number.isNaN(Number(updatedRowData.updated.x))) {
 					alert('Please enter a number')
@@ -117,9 +97,6 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
       var newRow = {
     		label: '',
     		atom: '',
-    		//wyckoff: '',
-    		//valence : '',
-    		//isotope : '',
     		x : '',
     		y : '',
     		z : '',
@@ -138,7 +115,6 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
       }
   	  const myState = store.getState();
       const tab = myState['myReducer4']['Selected'];
-      //console.log('tab is ', tab)
   	  const real = myState['myReducer4']['Phases'][tab][0];
       return real[index];
     },
@@ -156,7 +132,6 @@ var Grid = onClickOutside(React.createClass({displayName: 'component',
 
     handleMount: function() {
 	     document.getElementById('mybtn').style.visibility = "visible";
-       //document.getElementById('fitbtn').style.visibility = "visible";
     },
 
 

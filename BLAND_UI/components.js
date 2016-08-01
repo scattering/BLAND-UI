@@ -1,13 +1,6 @@
 var Toolbar = ReactDataGrid.Toolbar;
 var DropDownEditor = ReactDataGrid.Editors.DropDownEditor;
-//var AutoCompleteEditor = ReactDataGrid.Editors.AutoComplete;
 
-//var atoms = [{id:0, title : 'H'}, {id:1, title : 'He'}, {id:2, title : 'Li'}, {id:3, title : 'Be'}];
-/*var atoms = ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni',
-'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe', 'Cs', 'Ba', 'La',
-'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
-'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc',
-'Lv', 'Ts', 'Og']*/
 var atoms = ['', '1  |  H', '2  |  He', '3  |  Li', '4  |  Be', '5  |  B', '6  |  C', '7  |  N', '8  |  O', '9  |  F', '10  |  Ne', '11  |  Na', '12  |  Mg', '13  |  Al',
 '14  |  Si', '15  |  P', '16  |  S', '17  |  Cl', '18  |  Ar', '19  |  K', '20  |  Ca', '21  |  Sc', '22  |  Ti', '23  |  V', '24  |  Cr', '25  |  Mn', '26  |  Fe',
 '27  |  Co', '28  |  Ni', '29  |  Cu', '30  |  Zn', '31  |  Ga', '32  |  Ge', '33  |  As', '34  |  Se', '35  |  Br', '36  |  Kr', '37  |  Rb', '38  |  Sr', '39  |  Y',
@@ -19,19 +12,6 @@ var atoms = ['', '1  |  H', '2  |  He', '3  |  Li', '4  |  Be', '5  |  B', '6  |
 '105  |  Db', '106  |  Sg', '107  |  Bh', '108  |  Hs', '109  |  Mt', '110  |  Ds', '111  |  Rg', '112  |  Cn', '113  |  Nh', '114  |  Fl', '115  |  Mc', '116  |  Lv',
 '117  |  Ts', '118  |  Og']
 var AtomEditor = React.createElement(DropDownEditor, {options: atoms});
-
-
-var valences = ['0', '1', '2', '3']
-var ValenceEditor = React.createElement(DropDownEditor, {options: valences});
-
-var isotopes = ['+1', '+2', '-1', '-2']
-var IsotopeEditor = React.createElement(DropDownEditor, {options: isotopes});
-
-//var wyckoffs = ['Wyc 1', 'Wyc 2', 'Wyc 3']
-//var WyckoffEditor = React.createElement(DropDownEditor, {options: wyckoffs});
-
-//var therm = ['Isotropic', 'Anisotropic']
-//var ThermalEditor = React.createElement(DropDownEditor, {options: therm});
 
 var modes = ['', 'D1B', 'D20', 'NLS', 'D1A', 'D2B', 'DMC', 'Socabim', 'XYSIGMA', 'GSAS', 'GSASTOF', 'PANalytical'];
 var ModeEditor = React.createElement(DropDownEditor, {options: modes});
@@ -59,39 +39,20 @@ const columns = [
 	  name: 'Atom #',
 	  editor : AtomEditor
 	},
-	/*{
-	  key: 'valence',
-	  name: 'Valence',
-	  editor : ValenceEditor
-	},
-	{
-	  key: 'isotope',
-	  name: 'Isotope',
-	  editor : IsotopeEditor
-	},*/
-	//{
-	 // key: 'wyckoff',
-	//  name: 'Wyckoff Position',
-	 // editor : WyckoffEditor,
-	//  width: 150
-	//},
 	{
 	  key: 'x',
 	  name: 'x',
-	  editable : true,
-	  //width: 40
+	  editable : true
 	},
 	{
 		key: 'y',
 		name: 'y',
-		editable : true,
-		//width: 40
+		editable : true
 	},
 	{
 		key: 'z',
 		name: 'z',
-		editable : true,
-		//width: 40
+		editable : true
 	},
 	{
 	  key: 'occupancy',
@@ -152,26 +113,22 @@ const columns3 = [
 	{
 		key: 'wavelength',
 		name: 'Neutron Wavelength',
-		editable: true,
-		//width: 150
+		editable: true
 	},
 	{
 		key: 'u',
 		name: 'u',
-		editable: true,
-		//width: 100
+		editable: true
 	},
 	{
 		key: 'v',
 		name: 'v',
-		editable: true,
-		//width: 100
+		editable: true
 	},
 	{
 		key: 'w',
 		name: 'w',
-		editable: true,
-		//width: 100
+		editable: true
 	},
 	{
 		key: 'eta',

@@ -1,56 +1,3 @@
-//var Tabs = ReactSimpleTabs;
-/*var App = React.createClass({
-
-  handleOnMount: function(selectedIndex, $selectedPanel, $selectedTabMenu) {
-	  if(selectedIndex === 1) {
-		  ReactDOM.render(React.createElement(Cell, null), document.getElementById('tab1'));
-	  }
-	  else if(selectedIndex === 2) {
-		  ReactDOM.render(React.createElement(Grid, null), document.getElementById('tab2'));
-	  }
-	  else if(selectedIndex === 3) {
-		  ReactDOM.render(React.createElement(Instrument, null), document.getElementById('tab3'));
-	  }
-  },
-
-  handleAfterChange: function(selectedIndex, $selectedPanel, $selectedTabMenu) {
-	if(selectedIndex === 1) {
-		ReactDOM.render(React.createElement(Cell, null), document.getElementById('tab1'));
-	}
-	else if(selectedIndex === 2) {
-		ReactDOM.render(React.createElement(Grid, null), document.getElementById('tab2'));
-	}
-	else if(selectedIndex === 3) {
-		ReactDOM.render(React.createElement(Instrument, null), document.getElementById('tab3'));
-	}
-  },
-
-  render: function() {
-    return (
-      React.createElement(Tabs, {tabActive: 1, onAfterChange: this.handleAfterChange, onMount: this.handleOnMount},
-
-        	React.createElement(Tabs.Panel, {title:'Unit Cell'},
-          		React.createElement('h5', {},
-				React.createElement('div', {id: 'tab1'})
-		 	 )
-		),
-        	React.createElement(Tabs.Panel, {title:'Atoms'},
-         		 React.createElement('h5', {},
-				React.createElement('div', {id: 'tab2'})
-		  	)
-		),
-		React.createElement(Tabs.Panel, {title:'Instrument'},
-			React.createElement('h5', {},
-				React.createElement('div', {id: 'tab3'})
-			)
-		)
-	  )
-    );
-  }
-});
-
-ReactDOM.render(React.createElement(App, null), document.getElementById('content'));*/
-
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var Link = ReactRouter.Link;
@@ -61,94 +8,14 @@ var Navbar = ReactBootstrap.Navbar;
 var Nav = ReactBootstrap.Nav;
 var NavItem = ReactBootstrap.NavItem;
 
-/*var MainLayout = React.createClass({
-  displayName: "MainLayout",
-
-  render: function render() {
-    return React.createElement(
-      "div",
-      { className: "app" },
-      React.createElement("header", { className: "primary-header" }),
-      React.createElement(
-        "aside",
-        { className: "primary-aside" },
-        React.createElement(
-          "ul",
-          null,
-	  React.createElement(
-            "li",
-            null,
-            React.createElement(
-              Link,
-              { to: "/bland/" },
-              "Home"
-            )
-          ),
-          React.createElement(
-            "li",
-            null,
-            React.createElement(
-              Link,
-              { to: "/bland/cell/" },
-              "Unit Cell"
-            )
-          ),
-          React.createElement(
-            "li",
-            null,
-            React.createElement(
-              Link,
-              { to: "/bland/grid/" },
-              "Atoms"
-            )
-          ),
-          React.createElement(
-            "li",
-            null,
-            React.createElement(
-              Link,
-              { to: "/bland/instrument/" },
-              "Instrument"
-            )
-          )
-        )
-      ),
-      React.createElement(
-        "main",
-        null,
-        this.props.children
-      )
-    );
-  }
-});*/
-
-
 var MainLayout1 = React.createClass ({
 
 	displayName: "MainLayout1",
 
 	handleClick1: function(e) {
+		document.getElementById('upload').style.visibility = 'visible';
 		if(document.getElementById('mybtn').style.visibility === "visible") {
 			document.getElementById('mybtn').style.visibility = "hidden";
-			//document.getElementById('fitbtn').style.visibility = "hidden";
-		}
-	},
-
-	handleClick2: function(e) {
-		if(document.getElementById('mybtn').style.visibility === "hidden") {
-			document.getElementById('mybtn').style.visibility = "visible";
-		}
-	},
-
-	handleClick3: function(e) {
-		if(document.getElementById('mybtn').style.visibility === "hidden") {
-			document.getElementById('mybtn').style.visibility = "visible";
-		}
-	},
-
-	handleClick4: function(e) {
-		if(document.getElementById('mybtn').style.visibility === "hidden") {
-			document.getElementById('mybtn').style.visibility = "visible";
 		}
 	},
 
@@ -191,7 +58,7 @@ var MainLayout1 = React.createClass ({
 						)
 					)
 				),
-				React.createElement("main", null, this.props.children)
+				this.props.children
 		);
 	}
 });
@@ -202,11 +69,24 @@ var Help = React.createClass({
   render: function render() {
 		document.getElementById('inner').style.visibility = 'hidden';
 		document.getElementById('below').style.visibility = 'hidden';
-    return React.createElement(
-      "h1",
-      {style: {'textAlign': 'center', 'verticalAlign': 'middle'} },
-      "Home Page"
-    );
+		document.getElementById('drop3').style.visibility = 'visible';
+    return React.createElement("div", {style: {textAlign: 'center', fontSize: '20px'}},
+			React.createElement("ul", {style: {display: 'inline-block', textAlign: 'left'}},
+				React.createElement("li", null, "Create a crystal model and calculate intensity and structure factor spectra."),
+				React.createElement("li", null, "Upload observed intensity data and get a graph of the residuals."),
+				React.createElement("li", null, "Fit model to match observed data."),
+				React.createElement("li", null, "Under instrument, choose mode, then upload data, fill in at least wavelength, u, v, w."),
+				React.createElement("li", null, "Under model, upload a .cif file to fill in crystal model, or enter in parameters by hand."),
+				React.createElement("li", null, "Press calculate to get structure factors."),
+				React.createElement("li", null, "Under results, press button to show graphs."),
+				React.createElement("li", null, "Under fit, give range to fit each parameter, then press fit to run."),
+				React.createElement("li", null, "This will open a tab to monitor the status of the fit."),
+				React.createElement("li", null, "Access this status page at any time, using the url of the page (http://localhost:8001/status/{token})."),
+				React.createElement("li", null, "Save the updated parameters from that page, then upload the file below."),
+				React.createElement("li", null, "When the fit finishes, save the plots generated.")
+			),
+			React.createElement('div', {id: 'upload', style: {'textAlign': 'center', width: '20%'}})
+		);
   }
 });
 

@@ -1,8 +1,5 @@
 const CHANGE_LABEL = 'CHANGE_LABEL'
 const CHANGE_ATOM = 'CHANGE_ATOM'
-const CHANGE_VALENCE = 'CHANGE_VALENCE'
-const CHANGE_ISOTOPE = 'CHANGE_ISOTOPE'
-//const CHANGE_WYCKOFF = 'CHANGE_WYCKOFF'
 const CHANGE_X = 'CHANGE_X'
 const CHANGE_Y = 'CHANGE_Y'
 const CHANGE_Z = 'CHANGE_Z'
@@ -26,10 +23,6 @@ function changeValence(number, index, tab) {
 function changeIsotope(number, index, tab) {
 	return {type: CHANGE_ISOTOPE, number, index, tab}
 }
-
-//function changeWyckoff(text, index) {
-//	return {type: CHANGE_WYCKOFF, text, index}
-//}
 
 function changeX(number, index, tab) {
 	return {type: CHANGE_X, number, index, tab}
@@ -156,6 +149,7 @@ const ADD_FIT = 'ADD_FIT'
 const REMOVE_FIT = 'REMOVE_FIT'
 const CHANGE_PM = 'CHANGE_PM'
 const CHANGE_STEPS = 'CHANGE_STEPS'
+const CHANGE_BURN = 'CHANGE_BURN'
 
 function addFit(name, value) {
 	return {type: ADD_FIT, name}
@@ -168,4 +162,20 @@ function changePM(id, name, phase, row, value) {
 }
 function changeSteps(number) {
 	return {type: CHANGE_STEPS, number}
+}
+function changeBurn(number) {
+	return {type: CHANGE_BURN, number}
+}
+
+
+const CHANGE_OBSERVED = 'CHANGED_OBSERVED'
+
+function changeObserved(x, y, dy) {
+	return {type: CHANGE_OBSERVED, x, y, dy}
+}
+
+const CHANGE_CALCULATED = 'CHANGE_CALCULATED'
+
+function changeCalculated(x, y) {
+	return {type: CHANGE_CALCULATED, x, y}
 }

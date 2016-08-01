@@ -108,9 +108,11 @@ def fit():
 def main():
     cell = H.CrystalCell([8.478356,5.396669,6.957969],[90,90,90])
     uvw = [0.167065, -0.473453, 0.426145]
+    spG = H.SpaceGroup("62")
+    print spG.number
     H.diffPattern(infoFile=infoFile, wavelength=wavelength,
                   cell=cell, uvw=uvw, scale=1.4869,
-                  ttMin=ttMin, ttMax=ttMax, info=True, plot=True,
+                  ttMin=ttMin, ttMax=ttMax, info=True, plot=True, spaceGroup = spG,
                   observedData=(tt,observed), error=error, residuals = True)
 
 if __name__ == "__main__":
@@ -120,8 +122,8 @@ if __name__ == "__main__":
     from bumps.fitproblem import FitProblem
     from bumps.options import BumpsOpts
     from bumps.cli import setup_logging, make_store, store_overwrite_query, save_best, beep
-    #main()
-    fit()
+    main()
+    #fit()
 else:
     # called using bumps
     import bumps.names as bumps

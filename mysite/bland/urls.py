@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^data/$', views.data, name='data'),
     url(r'^stat/$', views.stat, name='stat'),
     url(r'^files/$', views.files, name='files'),
+    url(r'^passing/$', views.passing, name='passing'),
     url(r'^cell/$', views.IndexView.as_view(), name='index'),
     url(r'^grid/$', views.IndexView.as_view(), name='index'),
     url(r'^instrument/$', views.IndexView.as_view(), name='index'),

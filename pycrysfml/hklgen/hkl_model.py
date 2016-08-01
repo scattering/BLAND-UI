@@ -490,6 +490,12 @@ class AtomModel(object):
         self.y = Parameter(self.atom.coords()[1], name=self.atom.label() + " y")
         self.z = Parameter(self.atom.coords()[2], name=self.atom.label() + " z")
     
+    def B(self):
+        return self.atom.BIso()
+    
+    def occc(self):
+        return ["hello world", self.atom.occupancy(), self.atom.multip(), self.sgmultip]
+    
     def addMagAtom(self, magAtom, symmetry):
         # add a secondary magnetic atom object to the model
         if self.magAtoms != None:
