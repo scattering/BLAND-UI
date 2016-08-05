@@ -31,16 +31,19 @@ from .models import Question, Choice, Atom
 from .read_cif import *
 import hashlib, threading, datetime, time
 
+"""Template used for main page"""
 class IndexView(generic.ListView):
     template_name = 'bland/index.html'
     
     def get_queryset(self):
 	pass
 
+"""Renders page with status of fit"""
 def status(request, token):
     context = {'token': token}
     return render(request, 'bland/status.html', context)
 
+"""Modified CrystalCell class from fswig_hklgen.py."""
 class _CrystalCell(H.CrystalCell):
     def __init__(self, length=None, angle=None):
 	H.CrystalCell.__init__(self, length, angle)
@@ -70,6 +73,7 @@ class _CrystalCell(H.CrystalCell):
     def setCell(self, length, angle):
         pyc.FortFuncs().set_crystal_cell(pyc.FloatVector(length), pyc.FloatVector(angle), self, None, None)    
 
+"""Modified SpaceGroup class from fswig_hklgen.py."""
 class _SpaceGroup(H.SpaceGroup):
     def __init__(self, groupName=None):
 	H.SpaceGroup.__init__(self, groupName)
@@ -83,6 +87,7 @@ class _SpaceGroup(H.SpaceGroup):
     def symbol(self):
         return pyc.getSpaceGroup_spg_symb(self)
 
+"""Modified Atom class from fswig_hklgen.py. Added functionality"""
 class Atom(pyc.atom_type):
     def __init__(self, *args):
         # construct an atom from a list of attributes
@@ -135,6 +140,7 @@ class Atom(pyc.atom_type):
         return all([H.approxEq(self.coords()[i], other.coords()[i], eps)
                     for i in xrange(3)])
 
+"""Modified AtomList class from fswig_hklgen.py"""
 class AtomList(pyc.atom_list_type, pyc.matom_list_type):
     def __init__(self, atoms=None, magnetic=False):
         self.magnetic = magnetic
@@ -200,6 +206,7 @@ class AtomList(pyc.atom_list_type, pyc.matom_list_type):
         else:
             self.set_atom_list_element(value, index)
 
+"""Writes fit updates to temp file"""
 class CustomMonitor(monitor.Monitor):
     FIELDS = ['step', 'time', 'value', 'point']
     
@@ -235,6 +242,7 @@ class CustomMonitor(monitor.Monitor):
 	#fp.write(str(self.problem.getp()))
         fp.close()    
 
+"""Data structure that represents command line options given to BUMPS"""
 class Opts:
     def __init__(self, fit, store, args):
         self._fit = fit
@@ -255,7 +263,8 @@ class Opts:
     @property
     def batch(self):
         return None
-    
+
+"""Calculates structure factors and intensities given crystal parameters"""
 @csrf_exempt
 def calc(request):
     x = demjson.decode(request.body)  
@@ -294,7 +303,7 @@ def calc(request):
     ret = json.dumps([hkl_rets[0], tts[0], sfs[0], ttObs, ints[0]])
     return HttpResponse(ret)
 
-
+"""Starts a fit given a crystal model and fitting parameters"""
 @csrf_exempt
 def fitting(request):
     x = demjson.decode(request.body)
@@ -338,6 +347,7 @@ def fitting(request):
 		time.sleep(5)
 	return HttpResponse(token)
 
+"""Handles upload of crystal model file (.pcr, .cif, .cfl...)"""
 @csrf_exempt
 def upload(request):
     fp = request.FILES['file']
@@ -353,6 +363,7 @@ def upload(request):
     ret = json.dumps(ret)
     return HttpResponse(ret)
 
+"""Handles upload of observed data file. Requires knowledge of mode of data"""
 @csrf_exempt
 def data(request):
     mode = request.POST['mode']
@@ -390,6 +401,7 @@ def data(request):
     ret = json.dumps([list(tt), list(observed), list(error)])
     return HttpResponse(ret)
 
+"""Gets the status of an ongoing fit from the file written to by the monitor"""
 @csrf_exempt
 def stat(request):
     x = demjson.decode(request.body)
@@ -426,6 +438,7 @@ def stat(request):
 	ret = json.dumps('Sorry, the key doesn\'t exist')
     return HttpResponse(ret)
 
+"""Sends .zip of images created by BUMPS at the end of the fit"""
 @csrf_exempt
 def files(request):
     x = demjson.decode(request.body)
@@ -454,6 +467,7 @@ def files(request):
     except:
 	return HttpResponse("Sorry, this key doesn't exist.")
 
+"""Handles upload of .json parameter file"""
 @csrf_exempt
 def passing(request):
     try:
@@ -464,6 +478,7 @@ def passing(request):
 	ret = line
     return HttpResponse(ret)
 
+"""Stores file in temporary directory"""
 def handle_uploaded_file(f):
     if not os.path.exists('/tmp/bland'):
 	os.makedirs('/tmp/bland')    
@@ -471,6 +486,7 @@ def handle_uploaded_file(f):
 	for chunk in f.chunks():
 	    destination.write(chunk)
 
+"""Starts BUMPS fit. Edit this method to change how the fit runs"""
 def fitter(prob, steps, num_steps, burn, num_burn, key):
     problem = FitProblem(prob)
     opts = Opts(DreamFit, '/tmp/bland/store_' + key, [burn, steps])
@@ -496,6 +512,7 @@ def fitter(prob, steps, num_steps, burn, num_burn, key):
 	txt_file.write("\nComplete!")
     return
 
+"""Calculate the intensities for a crystal structure. Modified version of the method in fswig_hklgen.py"""
 def diffPattern(infoFile=None, backgroundFile=None, wavelength=1.5403,
                 ttMin=0, ttMax=180, ttStep=0.05, exclusions=None,
                 spaceGroup=None, cell=None, atomList=None,
@@ -569,12 +586,14 @@ def diffPattern(infoFile=None, backgroundFile=None, wavelength=1.5403,
     h, k, l = tuple([str(ref.hkl[i]) for ref in refList] for i in xrange(3))
     return (tt1, tt, intensities, [h,k,l], peaks, background)
 
+"""Returns structure factors squared for a crystal"""
 def structWrap(ttMin, ttMax, wavelength, spaceGroup, cell, atomList, muR=None):
     sMin, sMax = H.getS(ttMin, wavelength), H.getS(ttMax, wavelength)
     refList = H.hklGen(spaceGroup, cell, sMin, sMax, True, xtal=False)
     sfs2 = np.array(H.calcStructFact(refList, atomList, spaceGroup, wavelength, xtal=False))
     return sfs2
 
+"""Makes crystal cell model from parameters received from the client"""
 def makeCellModel(phases):
     cells, spaces, space_nums, my_groups, real_sgs, abcs, albegas, my_cells, atoms, atmLsts, atomLists, tts, intensities, hkls, structFacts, sfs, ints, hkl_rets, tt1s, twothetas, twothetas1, peakses, backgrounds, intensities_obs = {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
     for i in range(len(phases)):
@@ -608,6 +627,8 @@ def makeCellModel(phases):
 	atomLists[i] = AtomList(atmLsts[i])
     return my_cells, real_sgs, atomLists
 
+
+"""See what fitted parameters have been given"""
 def tryParams(phases):
     try:
 	u_pm = float(phases['all']['u']['pm'])
@@ -635,6 +656,7 @@ def tryParams(phases):
 	scale_pm = None
     return u_pm, v_pm, w_pm, zero_pm, eta_pm, scale_pm
 
+"""Makes cell model compatible with BUMPS"""
 def makeModelCell(cell, real_sgs, phases):
     print(real_sgs[0].number)
     cell_hkl = Mod.makeCell(cell, real_sgs[0].xtalSystem)
@@ -664,6 +686,7 @@ def makeModelCell(cell, real_sgs, phases):
 	print "no gamma"
     return cell_hkl
 
+"""Makes model that can be used as a fitting problem in BUMPS"""
 def makeModel(tt_mod, obs_mod, backg, u, v, w, wavelength, real_sgs, cell_hkl, atomLists, instrument, u_pm, v_pm, w_pm, zero_pm, eta_pm, scale_pm, phases):
     try:
 	zero = float(instrument['zero'])
@@ -755,6 +778,7 @@ def makeModel(tt_mod, obs_mod, backg, u, v, w, wavelength, real_sgs, cell_hkl, a
 	    pass
     return m
 
+"""Makes data structure for phases from the parameters received from client"""
 def makePhases(fits):
     phases = {}
     print "fits are",  fits
